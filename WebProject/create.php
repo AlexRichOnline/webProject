@@ -1,5 +1,10 @@
 <?php
     require 'authenticate.php';
+    session_start();
+    $errorFlag = false;
+    if(isset($_SESSION['emptyEntry'])){
+        $errorFlag = true;
+    }
 
 
 ?>
@@ -32,6 +37,10 @@
         </div>
         <section id="content">
             <h4>Add a Movie</h4>
+            <?php if($errorFlag) : ?>
+                <?=$_SESSION['emptyEntry'] ?>
+                <?php session_destroy() ?>
+            <?php endif?>
             <form action="process_post.php" method="post">
                     <label for="title" >Title</label>
                     <input name="title" id="title" type="text">
@@ -41,6 +50,8 @@
                     <input id="released" name="released" type="text">
                     <label for="genre">Genre{s}</label>
                     <input name="genre" id="genre" type="textarea">
+                    <label for="series">Series Name: {Optional}</label>
+                    <input name="series" id="series" type="text">
                     <input type="submit" name="create" value="create">
             </form>
             <?=print_r($_POST)?>

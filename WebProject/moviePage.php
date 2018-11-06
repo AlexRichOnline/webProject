@@ -1,12 +1,16 @@
 <?php
     require 'connect.php';
 
-    $select = "SELECT * FROM movies ORDER BY movieID DESC";
-    $statement = $db->prepare($select);
-    $statement->execute();
-    $movies = $statement->fetchAll();
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
-    $series;
+
+    $query = "SELECT * FROM movies WHERE movieID = :id";
+    $statement = $db->prepare($query);
+
+    $statement->bindValue(":id", $id, PDO::PARAM_INT);
+    $statement->execute();
+    $movie = $statement->fetch();
+
 ?>
 
 
@@ -35,40 +39,19 @@
             </nav>
         </div>
         <section id="content">
-            <h1>Welcome</h4>
-            <h2>Recent Uploads:</h3>
-            <label for="sort">Sort All Movies</label>
-            <select name="sort" onchange="header("location: index.php?test")">
-                <option value ="ten">10 Movies</option>
-                <option value ="all">All Movies</option>
-                <option value ="name">By Title</option>
-                <option value ="year">By Year</option>
-            </select>
             <div id="movies">
-            <?php for($i = 0; $i < 10; $i++) :?>
                 <div class="movie">
-                <?php if(isset($movies[$i]['seriesName'])) : ?>
-                        <?php $series = $movies[$i]['seriesName']?>
-                    <?php endif ?>
+                <h1><?=$movie['title']?> - <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a></h1>
+                <h2><?=$movie['title']?> is an  <?=$movie['genre']?> movie that was made in  <?=$movie['released']?>.</h2>
+                <?php $series = $movie['seriesName']?>
                 <?php if (isset($series)) : ?>
-                    <h3><a href="moviePage.php?id=<?=$movies[$i]['movieID']?>"><?=$movies[$i]['title']?></a> - <?=$movies[$i]['released']?> - <?=$series?> Series</h3>
                 <?php $series = null ?>
-                <?php else :?>
-                    <h3><a href="moviePage.php?id=<?=$movies[$i]['movieID']?>"><?=$movies[$i]['title']?></a> - <?=$movies[$i]['released']?></h3>
-                <?php endif?>
-                    <p>
-                        <small>
-                            <?=$movies[$i]['genre']?>
-                            <a href="edit.php?id=<?=$movies[$i]['movieID']?>">Edit Movie</a>
-                        </small>
-                    </p>
-                    <div>
-                        <?=$movies[$i]['rating']?>
-                    </div>
+                    <h2><?=$movie['title']?> is a part of the  <?=$movie['seriesName']?> franchise.</h2>
+                <?php endif?>  
+                    <h2><?=$movie['title']?>'s current rating: <?=$movie['rating']?> out of 5</h2>
+                    <h3>Check out <?=$movie['title']?></h3>
                 </div>
-            <?php endfor?>
             </div>
-            
         </section>
         <div id="botNav">
             <footer>
