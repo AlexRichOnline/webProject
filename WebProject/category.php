@@ -7,14 +7,12 @@
     }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Home Page</title>
+    <title>Category Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="styles.css" rel="stylesheet" type="text/css" media="screen" />
 </head>
@@ -34,7 +32,7 @@
             </nav>
         </div>
         <section id="content">
-            <h4>Add a Movie</h4>
+            <h4>Create a Category</h4>
             <?php if($errorFlag) : ?>
                 <?=$_SESSION['emptyEntry'] ?>
                 <?php session_destroy() ?>

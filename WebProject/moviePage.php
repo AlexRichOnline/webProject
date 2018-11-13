@@ -41,16 +41,22 @@
         <section id="content">
             <div id="movies">
                 <div class="movie">
-                <h1><?=$movie['title']?> - <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a></h1>
-                <h2><?=$movie['title']?> is an  <?=$movie['genre']?> movie that was made in  <?=$movie['released']?>.</h2>
-                <?php $series = $movie['seriesName']?>
-                <?php if (isset($series)) : ?>
-                <?php $series = null ?>
-                    <h2><?=$movie['title']?> is a part of the  <?=$movie['seriesName']?> franchise.</h2>
-                <?php endif?>  
-                    <h2><?=$movie['title']?>'s current rating: <?=$movie['rating']?> out of 5</h2>
-                    <h3>Check out <?=$movie['title']?></h3>
+                    <h1><?=$movie['title']?> - <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a></h1>
+                    <h2><?=$movie['title']?> is an  <?=$movie['genre']?> movie that was made in  <?=$movie['released']?>.</h2>
+                    <?php $series = $movie['seriesName']?>
+                    <?php if (isset($series)) : ?>
+                    <?php $series = null ?>
+                        <h2><?=$movie['title']?> is a part of the  <?=$movie['seriesName']?> franchise.</h2>
+                    <?php endif?>  
+                        <h2><?=$movie['title']?>'s current rating: <?=$movie['rating']?> out of 5</h2>
+                        <h3>Check out <?=$movie['title']?></h3>
                 </div>
+            <div>
+                <form>
+                    <legend>Leave a comment on <?=$movie['title']?></legend>
+                    <input type="textarea">
+                    <input type="submit">
+                </form>
             </div>
         </section>
         <div id="botNav">
