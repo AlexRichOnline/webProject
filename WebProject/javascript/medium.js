@@ -7,7 +7,7 @@
 function load()
 {
 	
-	
+	$().dropdown('toggle')
 
     sort.addEventListener("change", function(){
 		sortValue = document.getElementById("sort").value;
@@ -16,6 +16,7 @@ function load()
 
 		document.getElementById("sort").value = sortValue;
 	});
+
 
 	document.getElementById("all").addEventListener("click", function(){
 

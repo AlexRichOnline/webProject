@@ -55,7 +55,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div id="container-fluid">
+    <div class="container-fluid">
         <header id="top">
             <h1>Medium Movie Reviews</h1>
         </header>
@@ -72,6 +72,16 @@
         <section id="content">
             <h1>Welcome</h4>
             <h2>Movie Listings:</h2>
+            <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Sort By:
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">By Title</a>
+                <a class="dropdown-item" href="#">By Year</a>
+                <a class="dropdown-item" href="#">By Order Added</a>
+            </div>
+            </div>
             <select id="sort">
                 <option value="" disaled>Sort by:</option>
                 <option value ="name">By Title</option>
@@ -80,10 +90,10 @@
             </select>
             <h3><?=$sortBy?></h3>
             <button id="all" value="show" type="button">Display All Movies</button>
-            <div id="movies">
+            <div id="movies" class="row">
             <?php if(!$allRecords) : ?>
                 <?php for($i = 0; $i < $counter; $i++) :?>
-                    <div class="movie">
+                    <div class="col-sm">
                     <?php if(isset($movies[$i]['seriesName'])) : ?>
                             <?php $series = $movies[$i]['seriesName']?>
                         <?php endif ?>
@@ -99,9 +109,7 @@
                                 <a href="edit.php?id=<?=$movies[$i]['movieID']?>">Edit Movie</a>
                             </small>
                         </p>
-                        <div>
-                            <?=$movies[$i]['rating']?>
-                        </div>
+                        <p>Rating: <?=$movies[$i]['rating']?> out of 5</p>
                     </div>
                 <?php endfor?>
             <?php else :?>
@@ -122,9 +130,7 @@
                                     <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a>
                                 </small>
                             </p>
-                            <div>
-                                <?=$movie['rating']?>
-                            </div>
+                            <p>Rating: <?=$movie['rating']?> out of 5</p>
                         </div>
                     <?php endforeach?>
             <?php endif?>
