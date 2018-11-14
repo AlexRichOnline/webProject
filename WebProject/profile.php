@@ -39,8 +39,26 @@
             <li class="nav-item">
                 <a class="nav-link" href="create.php">Add a Movie</a>
             </li>
+            <?php if(!isset($_SESSION['loggedOn'])) : ?>
+            <li class="nav-item">
+                <a class="nav-link" href="login.php">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="register.php">Register Account</a>
+            </li>
+            <?php else :?>
+            <li class="nav-item">
+                <a class="nav-link" href="logout.php">Logout</a>
+            </li>
+            <?php endif?>
+            <?php if(isset($_SESSION['admin'])) :?>
+            <li class="nav-item">
+                <a class="nav-link" href="newuser.php">Create User</a>
+            </li>
+            <?php endif?>
         </ul>
         <div id="content">
+        <h2>Medium Movies - My Account</h2>
             <?php if(isset($_SESSION['loggedOn'])) : ?>
                 <h1>Login Successful, Welcome back: you are currently signed in with <span style="color:gold"><?=$_SESSION['username']?></span></h1>
             <?php endif ?>

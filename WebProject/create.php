@@ -41,9 +41,26 @@
             <li class="nav-item">
                 <a class="nav-link" href="create.php">Add a Movie</a>
             </li>
+            <?php if(!isset($_SESSION['loggedOn'])) : ?>
+            <li class="nav-item">
+                <a class="nav-link" href="login.php">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="register.php">Register Account</a>
+            </li>
+            <?php else :?>
+            <li class="nav-item">
+                <a class="nav-link" href="logout.php">Logout</a>
+            </li>
+            <?php endif?>
+            <?php if(isset($_SESSION['admin'])) :?>
+            <li class="nav-item">
+                <a class="nav-link" href="newuser.php">Create User</a>
+            </li>
+            <?php endif?>
         </ul>
-        <section id="content">
-            <h4>Add a Movie</h4>
+        <div id="content">
+        <h2>Medium Movies - Add a Movie</h2>
             <?php if($errorFlag) : ?>
                 <?=$_SESSION['emptyEntry'] ?>
                 <?php session_destroy() ?>
@@ -61,8 +78,7 @@
                     <input name="series" id="series" type="text">
                     <input type="submit" name="create" value="create">
             </form>
-            <?=print_r($_POST)?>
-        </section>
+        </div>
         <div id="botNav">
             <footer>
                 <nav>

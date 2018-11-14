@@ -2,24 +2,38 @@
     require 'connect.php';
     $errorFlag = false;
 
-    if(isset($_POST['join'])){
+    if(isset($_POST['join']) ){
        
-        if(!isset($_POST['pass1']) || empty($_POST['pass1']) || !isset($_POST['pass2']) || empty($_POST['pass2']) || $_POST['pass1'] != $_POST['pass2']){
-            $errorflag = true;
+        if(isset($_POST['username'])){
+            $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         }
 
-        if(!$errorFlag){
+        if(isset($_POST['pass1'])){
+            $pass1 = filter_input(INPUT_POST, 'pass1', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        }
+
+        if(isset($_POST['pass2'])){
+            $pass2 = filter_input(INPUT_POST, 'pass2', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        }
+        
+        if(!empty($username) && !empty($pass1) && !empty($pass2) && $pass1 == $pass2){
+        
+            $admin = false;
+
             $insert = "INSERT INTO account (username, password, admin) VALUES (:username, :pass, :admin)";
 
             $insertStatement = $db->prepare($insert);
             $insertStatement->bindValue(':username', $username);
-            $insertStatement->bindValue(':pass', $pass);
+            $insertStatement->bindValue(':pass', $pass1);
             $insertStatement->bindValue(':admin', $admin);
 
             $insertStatement->execute();
 
-            header("location: newuser.php");
+            header("location: login.php");
             exit;
+        }
+        else{
+            $errorFlag = true;
         }
     }
 
@@ -57,9 +71,27 @@
             <li class="nav-item">
                 <a class="nav-link" href="create.php">Add a Movie</a>
             </li>
+            <?php if(!isset($_SESSION['loggedOn'])) : ?>
+            <li class="nav-item">
+                <a class="nav-link" href="login.php">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="register.php">Register Account</a>
+            </li>
+            <?php else :?>
+            <li class="nav-item">
+                <a class="nav-link" href="logout.php">Logout</a>
+            </li>
+            <?php endif?>
+            <?php if(isset($_SESSION['admin'])) :?>
+            <li class="nav-item">
+                <a class="nav-link" href="newuser.php">Create User</a>
+            </li>
+            <?php endif?>
         </ul>
         <div id="content">
-            <form  method="post">  
+            <h2>Medium Movies - Register an Account</h2>
+            <form action"register.php" method="post">  
             <?php if($errorFlag) :?>
                 <legend>Error: Passwords do not match</legend>  
             <?php endif?>

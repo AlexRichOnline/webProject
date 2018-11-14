@@ -46,11 +46,28 @@
             <li class="nav-item">
                 <a class="nav-link" href="create.php">Add a Movie</a>
             </li>
+            <?php if(!isset($_SESSION['loggedOn'])) : ?>
+            <li class="nav-item">
+                <a class="nav-link" href="login.php">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="register.php">Register Account</a>
+            </li>
+            <?php else :?>
+            <li class="nav-item">
+                <a class="nav-link" href="logout.php">Logout</a>
+            </li>
+            <?php endif?>
+            <?php if(isset($_SESSION['admin'])) :?>
+            <li class="nav-item">
+                <a class="nav-link" href="newuser.php">Create User</a>
+            </li>
+            <?php endif?>
         </ul>
         <section id="content">
+        <h2>Medium Movies - Edit Movie</h2>
          <form action="process_post.php" method="post">
          <fieldset>
-            <legend>Edit Movie</legend>
             <p>
                 <?php if($errorFlag) : ?>
                     <?=$_SESSION['emptyEntry']?>

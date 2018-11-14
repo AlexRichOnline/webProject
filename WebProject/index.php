@@ -91,7 +91,7 @@
             <?php endif?>
         </ul>
         <div id="content">
-            <h1>Welcome</h4>
+        <h2>Medium Movies - Home</h2>
             <?php if(isset($_SESSION['denied'])) :?>
             <p>Access Denied: Requires logged on Administrator</p>
             <?php $_SESSION['denied'] = null ?>
