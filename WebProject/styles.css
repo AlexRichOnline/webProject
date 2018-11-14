@@ -5,7 +5,7 @@ html{
 
 body{
     background-color:#2E3034;
-    width: 1600px;
+    width: 1200px;
     margin: 0px auto;
     padding: 0px;
     min-width: 800px;
@@ -540,3 +540,7 @@ a:hover{
     background-color:gold;
 }
 
+.movie{
+    border: 2px solid gold;
+    background-color: red;
+}

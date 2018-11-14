@@ -1,6 +1,7 @@
 <?php
     require 'connect.php';
-
+    session_start();
+   
     $orderBy = "movieID";
     $allRecords = false;
 
@@ -58,20 +59,43 @@
         <header id="top">
             <h1>Medium Movie Reviews</h1>
         </header>
-        <div id="topNav">
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="profile.php">My Profile</a></li>
-                    <li><a href="about.php">About Us</a></li>
-                    <li><a href="create.php">Add a Movie</a></li>
-                </ul>
-            </nav>
-        </div>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" href="index.php">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="profile.php">My Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="create.php">Add a Movie</a>
+            </li>
+            <?php if(!isset($_SESSION['loggedOn'])) : ?>
+            <li class="nav-item">
+                <a class="nav-link" href="login.php">Login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="register.php">Register Account</a>
+            </li>
+            <?php else :?>
+            <li class="nav-item">
+                <a class="nav-link" href="logout.php">Logout</a>
+            </li>
+            <?php endif?>
+            <?php if(isset($_SESSION['admin'])) :?>
+            <li class="nav-item">
+                <a class="nav-link" href="newuser.php">Create User</a>
+            </li>
+            <?php endif?>
+        </ul>
         <div id="content">
             <h1>Welcome</h4>
-            <a href="login.php">Login<a/>
-            <a href="register.php">Register<a/>
+            <?php if(isset($_SESSION['denied'])) :?>
+            <p>Access Denied: Requires logged on Administrator</p>
+            <?php $_SESSION['denied'] = null ?>
+            <?php endif?>
             <h2>Movie Listings:</h2>
             <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -136,7 +160,19 @@
                     <?php endforeach?>
             <?php endif?>
             </div>
-            
+            <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item disabled">
+        <a class="page-link" href="#" tabindex="-1">Previous</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="#">1</a></li>
+        <li class="page-item"><a class="page-link" href="#">2</a></li>
+        <li class="page-item"><a class="page-link" href="#">3</a></li>
+        <li class="page-item">
+        <a class="page-link" href="#">Next</a>
+        </li>
+    </ul>
+    </nav>
         </div>
         <div id="botNav">
             <footer>

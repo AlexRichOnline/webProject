@@ -1,32 +1,34 @@
 <?php
     require 'connect.php';
+    session_start();
     $correctUser = false;
-    $loggedIn = false;
+    $loggedIn = null;
+    $_SESSION['loggedOn'] = null;
 
     if($_POST){
-   
-    //$logName = filter_input(INPUT_POST, 'logName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-    if(isset($_POST['logName'])){
-    $logName = $_POST['logName'];
-    }
 
-    $select = "SELECT * FROM account WHERE username = :logName";
-    $statement = $db->prepare($select);
-    $statement->bindValue(':logName', $logName);
-    $statement->execute();
-    
-    $user = $statement->fetch();
-    
-    if(isset($_POST['pass'])){
-    if($user['username'] == $_POST['logName'] && $user['password'] == $_POST['pass']){
-        $correctUser = true;
-    }
-}
+        if(isset($_POST['logName'])){
+            $logName = filter_input(INPUT_POST, 'logName', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        }
 
-   if($correctUser){
-       $loggedIn = true;
-   }
-}
+        $select = "SELECT * FROM account WHERE username = :logName";
+        $statement = $db->prepare($select);
+        $statement->bindValue(':logName', $logName);
+        $statement->execute();
+        
+        $user = $statement->fetch();
+        
+        if(isset($_POST['pass'])){
+            if($user['username'] == $_POST['logName'] && $user['password'] == $_POST['pass']){
+                $correctUser = true;
+                $_SESSION['username'] = $user['username'];
+            }
+        }
+
+        if(!$correctUser){
+            $loggedIn = false;
+        }
+    }
 
 ?>
 
@@ -50,20 +52,28 @@
             <h1>Medium Movie Reviews</h1>
             
         </header>
-        <div id="topNav">
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="profile.php">My Profile</a></li>
-                    <li><a href="about.php">About Us</a></li>
-                    <li><a href="create.php">Add a Movie</a></li>
-                </ul>
-            </nav>
-        </div>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" href="index.php">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="profile.php">My Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="create.php">Add a Movie</a>
+            </li>
+        </ul>
         <div id="content">
         
         <?php if(!$correctUser) : ?>
             <form method="post">    
+            <?php if(isset($loggedIn)) : ?>
+            <legend>Login Error: Please verify you have correct address and password</legend>
+            <?php $loggedIn = null ?>
+            <?php endif?>
                 <div class="form-group">
                     <label for="exampleInputEmail1">Email address</label>
                     <input type="email" name="logName" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
@@ -76,14 +86,14 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
              </form>
         <?php else : ?>
-        <?php session_start() ?>
-        <?php $_SESSION['loggedOn']?>
-        <?php header("location: profile.php") ?>
+            <?php $_SESSION['loggedOn'] = "true" ?>
+            <?php if($user['admin'] == 1) : ?>
+                <?php $_SESSION['admin'] = "true"?>
+            <?php endif?>
+
+            <?php header("location: profile.php") ?>
         <?php endif?>
         
-        <h2><?=print_r($user)?></h2>
-        <h2><?=$correctUser?></h2>
-        <h3>Seriously?</h3>
         </div>
         
         <div id="botNav">

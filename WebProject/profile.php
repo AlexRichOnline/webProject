@@ -1,5 +1,9 @@
 <?php
     session_start();
+    if(!isset($_SESSION['loggedOn'])){
+        header("location: login.php");
+        exit;
+    }
 
 ?>
 
@@ -21,21 +25,24 @@
     <div class="container-fluid">
         <header id="top">
             <h1>Medium Movie Reviews</h1>
-            
         </header>
-        <div id="topNav">
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="profile.php">My Profile</a></li>
-                    <li><a href="about.php">About Us</a></li>
-                    <li><a href="create.php">Add a Movie</a></li>
-                </ul>
-            </nav>
-        </div>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" href="index.php">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="profile.php">My Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="create.php">Add a Movie</a>
+            </li>
+        </ul>
         <div id="content">
             <?php if(isset($_SESSION['loggedOn'])) : ?>
-                <p>awwwwww yeah</p>
+                <h1>Login Successful, Welcome back: you are currently signed in with <span style="color:gold"><?=$_SESSION['username']?></span></h1>
             <?php endif ?>
         </div>
         

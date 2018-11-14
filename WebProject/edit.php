@@ -33,16 +33,20 @@
         <header id="top">
             <h1>Medium Movie Reviews</h1>
         </header>
-        <div id="topNav">
-            <nav>
-                <ul>
-                    <li><a href="index.php">Home</a></li>
-                    <li><a href="profile.php">My Profile</a></li>
-                    <li><a href="about.php">About Us</a></li>
-                    <li><a href="create.php">Add a Movie</a></li>
-                </ul>
-            </nav>
-        </div>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a class="nav-link active" href="index.php">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="profile.php">My Profile</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">About Us</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="create.php">Add a Movie</a>
+            </li>
+        </ul>
         <section id="content">
          <form action="process_post.php" method="post">
          <fieldset>
