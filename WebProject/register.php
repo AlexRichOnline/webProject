@@ -1,39 +1,5 @@
 <?php
-    require 'connect.php';
 
-    $orderBy = "movieID";
-    $allRecords = false;
-
-    $ascention = "DESC";
-    $sortBy = null;
-
-    if(isset($_GET['sort'])){
-        if($_GET['sort'] == "year" ){
-            $orderBy = "released";
-            $ascention = "ASC";
-            $sortBy = "Oldest to Newest by Year";
-        }
-        else if($_GET['sort'] == "name"){
-            $orderBy = "title";
-            $ascention = "ASC";
-            $sortBy = "Alphabetically Arranged by Title";
-        } 
-        else if($_GET['sort'] == "time"){
-            $orderBy = "movieID";
-            $ascention = "DESC";
-            $sortBy = "Reverse Chronological Order of Movies that were added to the system";
-        }
-    }
-
-    $select = "SELECT * FROM movies ORDER BY $orderBy $ascention";
-    $statement = $db->prepare($select);
-    $statement->execute();
-    $movies = $statement->fetchAll();
-
-    $counter = 10;
-    function setCounter(){
-        $counter = 100;
-    }
 
    
 
@@ -70,8 +36,8 @@
         </div>
         <div id="content">
             <h1>Welcome</h4>
-            <a href="login.php">Login<a/>
-            <a href="register.php">Register<a/>
+            <a href="#">Login<a/>
+            <a href="#">Register<a/>
             <h2>Movie Listings:</h2>
             <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
