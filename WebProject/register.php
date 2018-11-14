@@ -1,7 +1,27 @@
 <?php
+    require 'connect.php';
+    $errorFlag = false;
 
+    if(isset($_POST['join'])){
+       
+        if(!isset($_POST['pass1']) || empty($_POST['pass1']) || !isset($_POST['pass2']) || empty($_POST['pass2']) || $_POST['pass1'] != $_POST['pass2']){
+            $errorflag = true;
+        }
 
-   
+        if(!$errorFlag){
+            $insert = "INSERT INTO account (username, password, admin) VALUES (:username, :pass, :admin)";
+
+            $insertStatement = $db->prepare($insert);
+            $insertStatement->bindValue(':username', $username);
+            $insertStatement->bindValue(':pass', $pass);
+            $insertStatement->bindValue(':admin', $admin);
+
+            $insertStatement->execute();
+
+            header("location: newuser.php");
+            exit;
+        }
+    }
 
 ?>
 
@@ -39,75 +59,26 @@
             </li>
         </ul>
         <div id="content">
-            <h1>Welcome</h4>
-            <a href="#">Login<a/>
-            <a href="#">Register<a/>
-            <h2>Movie Listings:</h2>
-            <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Sort By:
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">By Title</a>
-                <a class="dropdown-item" href="#">By Year</a>
-                <a class="dropdown-item" href="#">By Order Added</a>
-            </div>
-            </div>
-            <select id="sort">
-                <option value="" disaled>Sort by:</option>
-                <option value ="name">By Title</option>
-                <option value ="year">By Year</option>
-                <option value ="time">By Order Added</option>
-            </select>
-            <h3><?=$sortBy?></h3>
-            <button id="all" value="show" type="button">Display All Movies</button>
-            <div id="movies" class="row">
-            <?php if(!$allRecords) : ?>
-                <?php for($i = 0; $i < $counter; $i++) :?>
-                    <div class="col-sm">
-                    <?php if(isset($movies[$i]['seriesName'])) : ?>
-                            <?php $series = $movies[$i]['seriesName']?>
-                        <?php endif ?>
-                    <?php if (isset($series)) : ?>
-                        <h3><a href="moviePage.php?id=<?=$movies[$i]['movieID']?>"><?=$movies[$i]['title']?></a> - <?=$movies[$i]['released']?> - <?=$series?> Series</h3>
-                    <?php $series = null ?>
-                    <?php else :?>
-                        <h3><a href="moviePage.php?id=<?=$movies[$i]['movieID']?>"><?=$movies[$i]['title']?></a> - <?=$movies[$i]['released']?></h3>
-                    <?php endif?>
-                        <p>
-                            <small>
-                                <?=$movies[$i]['genre']?>
-                                <a href="edit.php?id=<?=$movies[$i]['movieID']?>">Edit Movie</a>
-                            </small>
-                        </p>
-                        <p>Rating: <?=$movies[$i]['rating']?> out of 5</p>
-                    </div>
-                <?php endfor?>
-            <?php else :?>
-                <?php foreach($movies as $movie) :?>
-                        <div class="movie">
-                        <?php if(isset($movie['seriesName'])) : ?>
-                                <?php $series = $movie['seriesName']?>
-                            <?php endif ?>
-                        <?php if (isset($series)) : ?>
-                            <h3><a href="moviePage.php?id=<?=$movie['movieID']?>"><?=$movie['title']?></a> - <?=$movie['released']?> - <?=$series?> Series</h3>
-                        <?php $series = null ?>
-                        <?php else :?>
-                            <h3><a href="moviePage.php?id=<?=$movie['movieID']?>"><?=$movie['title']?></a> - <?=$movie['released']?></h3>
-                        <?php endif?>
-                            <p>
-                                <small>
-                                    <?=$movie['genre']?>
-                                    <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a>
-                                </small>
-                            </p>
-                            <p>Rating: <?=$movie['rating']?> out of 5</p>
-                        </div>
-                    <?php endforeach?>
+            <form  method="post">  
+            <?php if($errorFlag) :?>
+                <legend>Error: Passwords do not match</legend>  
             <?php endif?>
-            </div>
-            
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Enter a Email address to Register</label>
+                    <input type="email" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Enter Password</label>
+                    <input type="password" name="pass1" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    <label for="exampleInputPassword1">Re-Enter</label>
+                    <input type="password" name="pass2" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                </div>
+                <button type="submit" name="join" class="btn btn-primary">Submit</button>
+             </form>
+        
         </div>
+        
         <div id="botNav">
             <footer>
                 <nav>
