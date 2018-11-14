@@ -22,6 +22,7 @@
             if($user['username'] == $_POST['logName'] && $user['password'] == $_POST['pass']){
                 $correctUser = true;
                 $_SESSION['username'] = $user['username'];
+                $_SESSION['accountID'] = $user['accountID'];
             }
         }
 

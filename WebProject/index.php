@@ -113,8 +113,7 @@
                 <option value ="year">By Year</option>
                 <option value ="time">By Order Added</option>
             </select>
-            <h3><?=$sortBy?></h3>
-            <button id="all" value="show" type="button">Display All Movies</button>
+            <h3>Arranged by: <?=$sortBy?></h3>
             <div id="movies" class="row">
             <?php if(!$allRecords) : ?>
                 <?php for($i = 0; $i < $counter; $i++) :?>

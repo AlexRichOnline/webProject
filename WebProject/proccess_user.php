@@ -2,6 +2,11 @@
     require 'connect.php';
 
     session_start();
+    if($_SESSION['admin'] != true){
+        $_SESSION['denied'] = true;
+        header("location: index.php");
+        exit;
+    }
     $_SESSION['emptyEntry'];
 
     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -74,7 +79,5 @@
     <title>Document</title>
 </head>
 <body>
-   <?=print_r($_POST)?>
-   <p><?=$movieID?></p>
 </body>
 </html>
