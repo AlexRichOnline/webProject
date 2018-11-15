@@ -82,29 +82,44 @@
                     <?php endif?>  
                         <h4><?=$movie['title']?>'s current rating: <span style="color:gold"><?=$movie['rating']?></span> out of 5</h4>
                 </div>
-        <form method="post" action="process_comment.php">
+    <form method="post" action="process_comment.php" class="form-horizontal">
+        <!-- Textarea -->
+        <div class="form-group">
+            <?php if(isset($_SESSION['emptyEntry'])) :?>
+                <p><?= $_SESSION['emptyEntry']?></p>
+                <?php $_SESSION['emptyEntry'] = null ?>
+            <?php endif?>
+            <?php if(isset($_SESSION['cantComment'])) :?>
+                <p><?=$_SESSION['cantComment']?></p>
+                <?php $_SESSION['cantComment'] = null ?>
+            <?php endif?>
+            <label class="col-md-4 control-label" for="textarea">Comment on the movie:</label>
+            <div class="col-md-4">                     
+                <textarea class="form-control" placeholder="It was pretty dang medium..." id="textarea" name="textarea"></textarea>
+            </div>
+        </div>
+                <!-- Select Basic -->
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="selectbasic">Rate this film</label>
+            <div class="col-md-4">
+                <select id="selectbasic" name="selectbasic" class="form-control">
+                    <option value="1">one star</option>
+                    <option value="2">two star</option>
+                    <option value="3">three star</option>
+                    <option value="4">four star</option>
+                    <option value="5">five star</option>
+                </select>
+            </div>
+        </div>
         <div class="form-group row">
-        <div class="form-group">
-    <label for="exampleFormControlTextarea1">Leave a comment</label>
-    <textarea class="form-control" name="text" id="exampleFormControlTextarea1" rows="3"></textarea>
-  </div>
-        <div class="form-group">
-    <label for="exampleFormControlSelect2">Example multiple select</label>
-    <select multiple class="form-control" name="rating" id="exampleFormControlSelect2">
-      <option>1</option>
-      <option>2</option>
-      <option>3</option>
-      <option>4</option>
-      <option>5</option>
-    </select>
-    <div class="form-group row">
         <div class="col-sm-10">
-        <input type="hidden" name="accountID" value="<?=$_SESSION['accountID']?>"/>
-        <input type="hidden" name="id" value="<?=$movie['movieID']?>"/>
             <button type="submit" name="add" class="btn btn-primary">Leave Comment</button>
+            <input type="hidden" name="accountID" value="<?=$_SESSION['accountID']?>"/>
+            <input type="hidden" name="movieID" value="<?=$movie['movieID']?>"/>
         </div>
     </div>
     </form>
+
 </div>
             <h1><span style="color: #00b8e6">All Comments for <?=$movie['title']?>:</span></h1>
             <?php foreach($comments as $comment) :?>

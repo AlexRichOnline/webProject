@@ -9,6 +9,18 @@
 
         session_start();
         $_SESSION['emptyEntry'] = null;
+        $errorFlag = false;
+        $text = filter_input(INPUT_POST, 'textarea', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $rating = filter_input(INPUT_POST, 'selectbasic', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $movieID = filter_input(INPUT_POST, 'movieID', FILTER_SANITIZE_NUMBER_INT);
+        $accountID = filter_input(INPUT_POST, 'accountID', FILTER_SANITIZE_NUMBER_INT);
+
+        if(!isset($_SESSION['loggedOn'])){
+            $errorFlag = true;
+            $_SESSION['cantComment'] = "Sorry about that: you must be logged in to leave a comment";
+            header("location: moviePage.php?id=" . $movieID);
+            
+        }
 
         /*
          * Tests weather the inputs from the previous pages were left blank
@@ -16,33 +28,32 @@
          * @param $page The page the user is being redirected to or the previous page
         */
         function redirect($page){
-            if(empty($_POST['rating']) || empty($_POST['text']) ){
+            if(empty($_POST['textarea']) || empty($_POST['selectbasic']) ){
                 $_SESSION['emptyEntry'] = "We were unable to complete your request ensure both the rating and your comment are not empty";
                 header("location: $page");
                 exit;
             }
         }
 
-        $text = filter_input(INPUT_POST, 'text', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $rating = filter_input(INPUT_POST, 'rating', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $movieID = filter_input(INPUT_POST, 'movieID', FILTER_SANITIZE_NUMBER_INT);
-        $accountID = filter_input(INPUT_POST, 'accountID', FILTER_SANITIZE_NUMBER_INT);
+        
 
         if(isset($_POST['add'])){    
             
-            redirect("moviePage.php");
+            redirect("moviePage.php?id=" . $movieID);
 
-            $insert = "INSERT INTO comments (text, rating, movieID, accountID) values (:text, :rating, :movieID, :accountID)";
-            $insertStatement = $db->prepare($insert);
-        
-            $insertStatement->bindValue(':text', $text);
-            $insertStatement->bindValue(':rating', $rating);
-            $insertStatement->bindValue(':movieID', $movieID);
-            $insertStatement->bindValue(':accountID', $accountID);
-            $insertStatement->execute();
+            if(!$errorFlag){
+                $insert = "INSERT INTO comments (text, rating, movieID, accountID) values (:text, :rating, :movieID, :accountID)";
+                $insertStatement = $db->prepare($insert);
+            
+                $insertStatement->bindValue(':text', $text);
+                $insertStatement->bindValue(':rating', $rating);
+                $insertStatement->bindValue(':movieID', $movieID);
+                $insertStatement->bindValue(':accountID', $accountID);
+                $insertStatement->execute();
 
-            //header("location: moviePage.php?id=" . $movieID);
-            //exit;
+                header("location: moviePage.php?id=" . $movieID);
+                exit;
+            }
         }
 ?>
 
