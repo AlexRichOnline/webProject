@@ -86,12 +86,16 @@
         </ul>
         <div id="content">
         <h2>Medium Movies - Login to your Account</h2>
+        <?php if(isset($_SESSION['regSuccess'])) :?>
+            <h5><?=$_SESSION['regSuccess']?></h5>
+            <?php $_SESSION['regSuccess'] = null?>
+        <?php endif?>
         <?php if(!$correctUser) : ?>
-            <form method="post">    
-            <?php if(isset($loggedIn)) : ?>
-            <legend>Login Error: Please verify you have correct address and password</legend>
-            <?php $loggedIn = null ?>
-            <?php endif?>
+                <form method="post">    
+                <?php if(isset($loggedIn)) : ?>
+                    <legend>Login Error: Please verify you have correct address and password</legend>
+                <?php $loggedIn = null ?>
+        <?php endif?>
                 <div class="form-group">
                     <label for="exampleInputEmail1">Email address</label>
                     <input type="email" name="logName" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
@@ -105,6 +109,7 @@
              </form>
         <?php else : ?>
             <?php $_SESSION['loggedOn'] = "true" ?>
+            
             <?php if($user['admin'] == 1) : ?>
                 <?php $_SESSION['admin'] = "true"?>
             <?php endif?>

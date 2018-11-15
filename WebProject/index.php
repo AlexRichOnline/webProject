@@ -35,9 +35,6 @@
     function setCounter(){
         $counter = 100;
     }
-
-   
-
 ?>
 
 <!DOCTYPE html>
@@ -59,6 +56,9 @@
         <header id="top">
             <h1>Medium Movie Reviews</h1>
         </header>
+        <?php if(isset($_SESSION['username'])) :?>
+                <p><?=$_SESSION['username']?></p>
+        <?php endif?>
         <ul class="nav nav-pills">
             <li class="nav-item">
                 <a class="nav-link active" href="index.php">Home</a>

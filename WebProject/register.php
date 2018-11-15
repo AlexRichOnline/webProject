@@ -1,6 +1,7 @@
 <?php
     require 'connect.php';
     $errorFlag = false;
+    session_start();
 
     if(isset($_POST['join']) ){
        
@@ -28,6 +29,7 @@
             $insertStatement->bindValue(':admin', $admin);
 
             $insertStatement->execute();
+            $_SESSION['regSuccess'] = "You have successfully registered the account" . $username;
 
             header("location: login.php");
             exit;
