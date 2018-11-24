@@ -98,7 +98,11 @@
         <?php endif?>
                 <div class="form-group">
                     <label for="exampleInputEmail1">Email address</label>
-                    <input type="email" name="logName" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    <?php if(isset($_SESSION['email'])) :?>
+                        <input type="email" name="logName" class="form-control" value="<?=$_SESSION['email']?>" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    <?php else : ?>
+                        <input type="email" name="logName" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    <?php endif ?>
                     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                 </div>
                 <div class="form-group">

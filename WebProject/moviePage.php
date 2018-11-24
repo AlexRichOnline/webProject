@@ -17,6 +17,8 @@
     $selectStatement->execute();
     $comments = $selectStatement->fetchAll();
 
+  
+
 ?>
 
 
@@ -119,18 +121,30 @@
         </div>
     </div>
     </form>
-
 </div>
-            <h1><span style="color: #00b8e6">All Comments for <?=$movie['title']?>:</span></h1>
-            <?php foreach($comments as $comment) :?>
-            <div class="comment">
-                <h5>Comment date: <?=date('F d, Y  h:i A', strtotime($comment['timestamp']))?></h5>
-                <h5><?=$comment['text']?></h5>
-                <h5>Rating: <?=$comment['rating']?> stars</h5>
-            <?php endforeach?>
-                </div>
-            </div>
-            
+    <h1><span style="color: #00b8e6">All Comments for <?=$movie['title']?>:</span></h1>
+    <?php foreach($comments as $comment) :?>
+    <div class="comment">
+        <h5>Comment posted on: <?=date('F d, Y  h:i A', strtotime($comment['timestamp']))?></h5>
+        <h5><?=$comment['username']?>: "<?=$comment['text']?>"</h5>
+        <h5>Rating: <?=$comment['rating']?> stars</h5>
+        <?php $accountID = $comment['accountID'] ?>
+    <?php 
+          $isAdmin = "SELECT * FROM account WHERE accountID = $accountID";
+          $adminStatement = $db->prepare($isAdmin);
+          $adminStatement->execute();
+          $admin = $adminStatement->fetch();
+        //   && $admin['admin'] == 0
+    ?>
+        <?php if(isset($_SESSION['admin']) ) : ?>
+        <form method="post" action="process_comment.php">
+            <input type="hidden" name="currentFilm" value="<?=$movie['movieID']?>"/>
+            <button type="Submit" name="deleteComment" value="<?=$comment['commentID']?>" class="btn btn-outline-danger">Delete</button>
+        </form>
+        <?php endif?>
+    <?php endforeach?>
+        </div>
+    </div>  
         <div id="botNav">
             <footer>
                 <nav>
@@ -143,8 +157,6 @@
                 </nav>
             </footer>
         </div>
-        
     </div>
-    
 </body>
 </html>

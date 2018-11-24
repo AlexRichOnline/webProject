@@ -1,6 +1,7 @@
 <?php
     require 'connect.php';
     $errorFlag = false;
+    $uniqueUser = false;
     session_start();
 
     if(isset($_POST['join']) ){
@@ -8,6 +9,20 @@
         if(isset($_POST['username'])){
             $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         }
+
+        $query = "SELECT * FROM account WHERE username = :username";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':username', $username);
+        $statement->execute();
+
+        if($statement->rowCount() > 0){
+            $_SESSION['uniqueUser'] = "Sorry but that username is already in use please select another";
+            $uniqueUser = false;
+        }
+        else{
+            $uniqueUser = true;
+        }
+
 
         if(isset($_POST['pass1'])){
             $pass1 = filter_input(INPUT_POST, 'pass1', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -17,25 +32,29 @@
             $pass2 = filter_input(INPUT_POST, 'pass2', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         }
         
-        if(!empty($username) && !empty($pass1) && !empty($pass2) && $pass1 == $pass2){
-        
-            $admin = false;
+        if($uniqueUser){
+            if(!empty($username) && !empty($pass1) && !empty($pass2) && $pass1 == $pass2){
 
-            $insert = "INSERT INTO account (username, password, admin) VALUES (:username, :pass, :admin)";
+                
+            
+                $admin = false;
 
-            $insertStatement = $db->prepare($insert);
-            $insertStatement->bindValue(':username', $username);
-            $insertStatement->bindValue(':pass', $pass1);
-            $insertStatement->bindValue(':admin', $admin);
+                $insert = "INSERT INTO account (username, password, admin) VALUES (:username, :pass, :admin)";
 
-            $insertStatement->execute();
-            $_SESSION['regSuccess'] = "You have successfully registered the account" . $username;
+                $insertStatement = $db->prepare($insert);
+                $insertStatement->bindValue(':username', $username);
+                $insertStatement->bindValue(':pass', $pass1);
+                $insertStatement->bindValue(':admin', $admin);
 
-            header("location: login.php");
-            exit;
-        }
-        else{
-            $errorFlag = true;
+                $insertStatement->execute();
+                $_SESSION['regSuccess'] = "You have successfully registered the account" . $username;
+                $_SESSION['email'] = $username;
+                header("location: login.php");
+                exit;
+            }
+            else{
+                $errorFlag = true;
+            }
         }
     }
 
@@ -97,6 +116,10 @@
             <?php if($errorFlag) :?>
                 <legend>Error: Passwords do not match</legend>  
             <?php endif?>
+            <?php if(isset($_SESSION['uniqueUser'])) :?>
+                <p><?=$_SESSION['uniqueUser']?></p>
+                <?php $_SESSION['uniqueUser'] = null?>
+            <?php endif ?>
                 <div class="form-group">
                     <label for="exampleInputEmail1">Enter a Email address to Register</label>
                     <input type="email" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
@@ -110,7 +133,6 @@
                 </div>
                 <button type="submit" name="join" class="btn btn-primary">Submit</button>
              </form>
-        
         </div>
         
         <div id="botNav">

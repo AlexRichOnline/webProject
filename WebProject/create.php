@@ -83,7 +83,13 @@
                     <input name="series" id="series" type="text">
                     <input type="submit" name="create" value="create">
             </form>
+            <form method="post" enctype="multipart/form-data">
+                <label for="image">Image Filename: </label>
+                <input type="file" name="image" id="image">
+                <input type="submit" name="Submit" value="Upload Image">
+            </form>
         </div>
+        
         <div id="botNav">
             <footer>
                 <nav>
