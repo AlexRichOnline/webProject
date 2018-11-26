@@ -7,11 +7,6 @@
     }
 
     require 'connect.php';
-    $errorFlag = false;
-
-    if(isset($_SESSION['emptyEntry'])){
-        $errorFlag = true;
-    }
 
     $movieID = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
@@ -74,34 +69,19 @@
             <?php endif?>
         </ul>
         <section id="content">
-        <h2>Medium Movies - Edit Movie</h2>
-         <form action="process_post.php" method="post">
-         <fieldset>
-            <p>
-                <?php if($errorFlag) : ?>
-                    <?=$_SESSION['emptyEntry']?>
-                    <?php session_destroy() ?>
-                <?php endif ?>
-                <label for="title">Title:</label>
-                <input name="title" id="title" value="<?=$result['title']?>" />
-                <label for "released">Year:</label>
-                <input id="released" name="released" type="text" value="<?=$result['released']?>">
-                <label for="rating">Rating out of 5:</label>
-                <input name="rating" id="rating" max="5" min="0" type="number" value="<?=$result['rating']?>">
-                <label for="series">Series Name: {Optional}</label>
-                <input name="series" id="series" type="text" value="<?=$result['seriesName']?>">
-            </p>
-            <p>
-                <label for="genre">Genre{s}:</label>
-                <textarea name="genre" id="genre"><?=$result['genre']?></textarea>
-            </p>
-            <p>
-                <input type="hidden" name="id" value="<?=$result['movieID']?>" />
-                <input type="submit" name="update" value="Update" />
-                <input type="submit" name="delete" value="Delete" onclick="return confirm('Are you sure you wish to delete this post?')" />
-            </p>
-            </fieldset>
-        </form>
+        <h2>Medium Movies: <span style="color: #00b8e6"><?=$result['title']?></span> - Add an Image</h2>
+        <form method="post" action="image_upload.php" enctype="multipart/form-data">
+        <?php if(isset($_SESSION['invalidImage'])): ?>
+            <legend><?=$_SESSION['invalidImage']?></legend>
+            <?php $_SESSION['invalidImage'] = null?>
+        <?php endif?>
+                <input type="hidden" name="movieID" value="<?=$result['movieID']?>"/>
+                <input type="hidden" name="movieTitle" value="<?=$result['title']?>"/>
+                <label for="image">Image Filename: </label>
+                <input type="file" name="image" id="image">
+                <input type="submit" name="uploadImage" value="Upload Image">
+            </form>   
+        </div>
         <div id="botNav">
             <footer>
                 <nav>

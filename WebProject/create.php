@@ -70,7 +70,7 @@
                 <?=$_SESSION['emptyEntry'] ?>
                 <?php session_destroy() ?>
             <?php endif?>
-            <form action="process_post.php" method="post">
+            <!-- <form action="process_post.php" method="post">
                     <label for="title" >Title</label>
                     <input name="title" id="title" type="text">
                     <label for="rating">Rating out of 5</label>
@@ -82,12 +82,61 @@
                     <label for="series">Series Name: {Optional}</label>
                     <input name="series" id="series" type="text">
                     <input type="submit" name="create" value="create">
-            </form>
-            <form method="post" enctype="multipart/form-data">
-                <label for="image">Image Filename: </label>
-                <input type="file" name="image" id="image">
-                <input type="submit" name="Submit" value="Upload Image">
-            </form>
+            </form> -->
+<form class="form-horizontal" method="post" action="process_post.php">
+<fieldset>
+<!-- Form Name -->
+<legend>Add a Movie:</legend>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="title">Movie Title:</label>  
+  <div class="col-md-4">
+  <input id="textinput" name="title" id="title" name="title" type="text" placeholder="The Film" class="form-control input-md"> 
+  </div>
+</div>
+
+<label class="col-md-4 control-label" for="rating">Rate this film:</label>
+            <div class="col-md-4">
+                <select id="rating" name="rating" class="form-control">
+                    <option value="1">one star</option>
+                    <option value="2">two star</option>
+                    <option value="3">three star</option>
+                    <option value="4">four star</option>
+                    <option value="5">five star</option>
+                </select>
+            </div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="released">Year:</label>  
+  <div class="col-md-4">
+  <input id="released" name="released" type="text" placeholder="2XXX" class="form-control input-md">
+  </div>
+</div>
+
+<!-- Textarea -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="genre">Genre{s}</label>
+  <div class="col-md-4">                     
+    <textarea class="form-control" placeholder="Action, Comedy, Spy" id="genre" name="genre"></textarea>
+  </div>
+</div>
+<!-- Multiple Checkboxes (inline) -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="checkbox-inline">Add a Image:</label>
+  <div class="col-md-4">
+    <label class="checkbox-inline" for="addImage">
+      <input type="checkbox" name="addImage" id="addImage" value="yes">
+      Yes
+    </label>
+  </div>
+</div>
+</fieldset>
+<div class="form-group">
+<button type="submit" name="create" value="create" class="btn btn-outline-success">Add Movie</button>
+</div
+</form>
+
         </div>
         
         <div id="botNav">

@@ -17,10 +17,12 @@
     $selectStatement->execute();
     $comments = $selectStatement->fetchAll();
 
-  
-
+    $image = "SELECT * FROM images WHERE movieID = :id";
+    $getImage = $db->prepare($image);
+    $getImage->bindValue(":id", $id, PDO::PARAM_INT);
+    $getImage->execute();
+    $file = $getImage->fetch();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -75,7 +77,11 @@
         <div id="content">
             <div id="movies">
                 <div class="movie">
-                    <h1><?=$movie['title']?> - <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a></h1>
+                <?php if(isset($_SESSION['admin'])) :?>
+                    <h1><?=$movie['title']?> - <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a> - <a href="addImage.php?id=<?=$movie['movieID']?>">Add an Image</a></h1>
+                <?php else : ?>
+                <h1><?=$movie['title']?></h1>
+                <?php endif ?>
                     <h3><?=$movie['title']?> is an  <?=$movie['genre']?> movie that was made in  <?=$movie['released']?>.</h3>
                     <?php $series = $movie['seriesName']?>
                     <?php if (isset($series)) : ?>
@@ -102,7 +108,7 @@
         </div>
                 <!-- Select Basic -->
         <div class="form-group">
-            <label class="col-md-4 control-label" for="selectbasic">Rate this film</label>
+            <label class="col-md-4 control-label" for="selectbasic">Rate this film:</label>
             <div class="col-md-4">
                 <select id="selectbasic" name="selectbasic" class="form-control">
                     <option value="1">one star</option>
@@ -121,6 +127,15 @@
         </div>
     </div>
     </form>
+    <?php if($getImage->rowCount() > 0):?>
+         <img src="uploads/<?=$file['filename']?>" alt="<?=$movie['title']?>'s image unavailble"/>
+            <?php if(isset($_SESSION['admin']) ) : ?>
+                <form method="post" action="image_upload.php">
+                    <input type="hidden" name="movieID" value="<?=$movie['movieID']?>"/>
+                    <button type="Submit" name="deleteImage" value="<?=$file['filename']?>" class="btn btn-outline-danger" onclick="return confirm('Are you sure you wish to delete this image?')">Delete Image</button>
+                </form>
+            <?php endif?>
+    <?php endif?>
 </div>
     <h1><span style="color: #00b8e6">All Comments for <?=$movie['title']?>:</span></h1>
     <?php foreach($comments as $comment) :?>
@@ -139,7 +154,7 @@
         <?php if(isset($_SESSION['admin']) ) : ?>
         <form method="post" action="process_comment.php">
             <input type="hidden" name="currentFilm" value="<?=$movie['movieID']?>"/>
-            <button type="Submit" name="deleteComment" value="<?=$comment['commentID']?>" class="btn btn-outline-danger">Delete</button>
+            <button type="Submit" name="deleteComment" value="<?=$comment['commentID']?>" class="btn btn-outline-danger">Delete Comment</button>
         </form>
         <?php endif?>
     <?php endforeach?>

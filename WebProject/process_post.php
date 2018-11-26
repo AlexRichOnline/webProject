@@ -42,6 +42,16 @@
 
         $insertStatement->execute();
 
+        if(isset($_POST['addImage'])) {
+            $select = "SELECT * FROM movies WHERE title = :title";
+            $getFilm = $db->prepare($select);
+            $getFilm->bindValue(":title", $title);
+            $getFilm->execute();
+            $film = $getFilm->fetch();
+            header("location: addImage.php?id=" . $film['movieID']);
+            exit;
+        }
+
         header("location: index.php");
         exit;
     }

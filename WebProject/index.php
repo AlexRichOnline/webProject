@@ -31,10 +31,14 @@
     $statement->execute();
     $movies = $statement->fetchAll();
 
-    $counter = 10;
-    function setCounter(){
-        $counter = 100;
-    }
+   $results_per_page = 10;
+
+   $sql = "SELECT * FROM movies";
+   $result = $db->prepare($sql);
+   $result->execute();
+   $return = $result->fetchAll();
+
+   $number_of_results = $result->rowCount();
 ?>
 
 <!DOCTYPE html>
@@ -97,16 +101,6 @@
             <?php $_SESSION['denied'] = null ?>
             <?php endif?>
             <h2>Movie Listings:</h2>
-            <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Sort By:
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">By Title</a>
-                <a class="dropdown-item" href="#">By Year</a>
-                <a class="dropdown-item" href="#">By Order Added</a>
-            </div>
-            </div>
             <select id="sort">
                 <option value="" disaled>Sort by:</option>
                 <option value ="name">By Title</option>
@@ -115,28 +109,6 @@
             </select>
             <h3>Arranged by: <?=$sortBy?></h3>
             <div id="movies" class="row">
-            <?php if(!$allRecords) : ?>
-                <?php for($i = 0; $i < $counter; $i++) :?>
-                    <div class="col-sm">
-                    <?php if(isset($movies[$i]['seriesName'])) : ?>
-                            <?php $series = $movies[$i]['seriesName']?>
-                        <?php endif ?>
-                    <?php if (isset($series)) : ?>
-                        <h3><a href="moviePage.php?id=<?=$movies[$i]['movieID']?>"><?=$movies[$i]['title']?></a> - <?=$movies[$i]['released']?> - <?=$series?> Series</h3>
-                    <?php $series = null ?>
-                    <?php else :?>
-                        <h3><a href="moviePage.php?id=<?=$movies[$i]['movieID']?>"><?=$movies[$i]['title']?></a> - <?=$movies[$i]['released']?></h3>
-                    <?php endif?>
-                        <p>
-                            <small>
-                                <?=$movies[$i]['genre']?>
-                                <a href="edit.php?id=<?=$movies[$i]['movieID']?>">Edit Movie</a>
-                            </small>
-                        </p>
-                        <p>Rating: <?=$movies[$i]['rating']?> out of 5</p>
-                    </div>
-                <?php endfor?>
-            <?php else :?>
                 <?php foreach($movies as $movie) :?>
                         <div class="movie">
                         <?php if(isset($movie['seriesName'])) : ?>
@@ -157,7 +129,7 @@
                             <p>Rating: <?=$movie['rating']?> out of 5</p>
                         </div>
                     <?php endforeach?>
-            <?php endif?>
+            
             </div>
             <nav aria-label="Page navigation example">
     <ul class="pagination justify-content-center">
