@@ -17,9 +17,10 @@
         $statement->execute();
         
         $user = $statement->fetch();
+        $hashed_pass = $user['password'];
         
         if(isset($_POST['pass'])){
-            if($user['username'] == $_POST['logName'] && $user['password'] == $_POST['pass']){
+            if(password_verify($_POST['pass'], $hashed_pass)){
                 $correctUser = true;
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['accountID'] = $user['accountID'];
@@ -81,6 +82,9 @@
             <?php if(isset($_SESSION['admin'])) :?>
             <li class="nav-item">
                 <a class="nav-link" href="newuser.php">Create User</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Genre.php">Add Genre</a>
             </li>
             <?php endif?>
         </ul>

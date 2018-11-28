@@ -40,14 +40,13 @@
                 $admin = false;
 
                 $insert = "INSERT INTO account (username, password, admin) VALUES (:username, :pass, :admin)";
-
                 $insertStatement = $db->prepare($insert);
                 $insertStatement->bindValue(':username', $username);
-                $insertStatement->bindValue(':pass', $pass1);
+                $insertStatement->bindValue(':pass', password_hash($pass1, PASSWORD_DEFAULT));
                 $insertStatement->bindValue(':admin', $admin);
 
                 $insertStatement->execute();
-                $_SESSION['regSuccess'] = "You have successfully registered the account" . $username;
+                $_SESSION['regSuccess'] = "You have successfully registered the account " . $username;
                 $_SESSION['email'] = $username;
                 header("location: login.php");
                 exit;
@@ -107,6 +106,9 @@
             <?php if(isset($_SESSION['admin'])) :?>
             <li class="nav-item">
                 <a class="nav-link" href="newuser.php">Create User</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Genre.php">Add Genre</a>
             </li>
             <?php endif?>
         </ul>

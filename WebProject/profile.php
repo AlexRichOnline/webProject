@@ -55,6 +55,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="newuser.php">Create User</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Genre.php">Add Genre</a>
+            </li>
             <?php endif?>
         </ul>
         <div id="content">

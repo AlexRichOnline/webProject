@@ -12,10 +12,11 @@
     }
 
     require "connect.php";
-    $select = "SELECT * FROM account";
+    $select = "SELECT * FROM genres";
     $statement = $db->prepare($select);
     $statement->execute();
-    $users = $statement->fetchAll();
+    $returnSet = $statement->fetchAll();
+
 ?>
 
 
@@ -74,53 +75,37 @@
             <?php endif?>
         </ul>
         <div id="content">
-        <h2>Medium Movies - Create a New User</h2>
-            <?php if($errorFlag) : ?>
-                <?=$_SESSION['emptyEntry'] ?>
-                <?php $_SESSION['emptyEntry'] = null?>
+        <h2>Medium Movies - Add a Genre</h2>
+        <?php if(isset($_SESSION['emptyEntry'])) :?>
+                <p><?= $_SESSION['emptyEntry']?></p>
+                <?php $_SESSION['emptyEntry'] = null ?>
             <?php endif?>
-        <form method="post" action="proccess_user.php">
-        <div class="form-group row">
-            <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
-            <div class="col-sm-10">
-            <input type="email" name="username" class="form-control" id="inputEmail3" placeholder="Email">
-            </div>
+        <form method="post" action="process_genre.php" class="form-horizontal">
+            <fieldset>
+                <!-- Text input-->
+                <label class="col-md-4 control-label" for="genreName">Genre Name:</label> 
+                <div class="form-group">
+                    <div class="col-md-4">
+                        
+                        <input id="genreName" name="genreName" type="text" placeholder="Film-Noir" class="form-control input-md">
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <div class="col-md-4">
+                        <button type="submit" id="addGenre" name="addGenre" value="add" class="btn btn-success">Add Genre</button>
+                    </div>
+                </div>
+            </fieldset>
+            </form>
+            <h3>Current Genres in the system</h3>
+            <ul id="genres">
+                <?php foreach($returnSet as $genre) :?>
+                    <li><?=$genre['genreName']?> - <span style="color: gold" ><a href="editGenre.php?id=<?=$genre['genreID']?>">Edit</a></span></li>
+                <?php endforeach?>
+            </ul>
         </div>
-        <div class="form-group row">
-            <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
-            <div class="col-sm-10">
-            <input type="password" name="pass" class="form-control" id="inputPassword3" placeholder="Password">
-        </div>
-    </div>
-    </fieldset>
-    <div class="form-group row">
-        <div class="col-sm-2">Administrative </div>
-        <div class="col-sm-10">
-        <div class="form-check">
-            <input class="form-check-input" name="admin" value="true" type="checkbox" id="gridCheck1">
-            <label class="form-check-label" for="gridCheck1">
-            Click to Promote
-            </label>
-        </div>
-        </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-sm-10">
-        <button type="submit" name="new" class="btn btn-primary">Create User</button>
-        </div>
-    </div>
-    </form>
-    <h2>All Currently Registered Users:</h2>
-    <?php foreach($users as $user): ?>
-    <div class="user">
-        <?php if($user['admin'] == true) :?>
-        <h4><span style="color: #00b8e6">Administrator:</span> <?=$user['username']?> - Password: <?=$user['password']?> - <a href="edituser.php?id=<?=$user['accountID']?>">Edit User</a></h4>
-     <?php else: ?>
-     <h4>User: <?=$user['username']?> - Password: <?=$user['password']?> - <a href="edituser.php?id=<?=$user['accountID']?>">Edit User</a></h4>
-    </div>
-    <?php endif?>
-    <?php endforeach?>
-    </div>
         <div id="botNav">
             <footer>
                 <nav>

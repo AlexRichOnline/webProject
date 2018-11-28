@@ -29,16 +29,27 @@
     $select = "SELECT * FROM movies ORDER BY $orderBy $ascention";
     $statement = $db->prepare($select);
     $statement->execute();
-    $movies = $statement->fetchAll();
+    $returnSet = $statement->fetchAll();
 
    $results_per_page = 10;
 
-   $sql = "SELECT * FROM movies";
-   $result = $db->prepare($sql);
-   $result->execute();
-   $return = $result->fetchAll();
+   $number_of_results = $statement->rowCount();
 
-   $number_of_results = $result->rowCount();
+   $number_of_pages = ceil($number_of_results/$results_per_page);
+
+   if(!isset($_GET['page'])){
+       $page = 1;
+   }
+   else{
+       $page = $_GET['page'];
+   }
+
+   $this_page_first_result = ($page - 1) * $results_per_page;
+
+   $query = "SELECT * FROM movies ORDER BY $orderBy $ascention LIMIT $this_page_first_result,$results_per_page";
+   $queryStatement = $db->prepare($query);
+   $queryStatement->execute();
+   $queryReturn = $queryStatement->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -92,6 +103,9 @@
             <li class="nav-item">
                 <a class="nav-link" href="newuser.php">Create User</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Genre.php">Add Genre</a>
+            </li>
             <?php endif?>
         </ul>
         <div id="content">
@@ -109,7 +123,7 @@
             </select>
             <h3>Arranged by: <?=$sortBy?></h3>
             <div id="movies" class="row">
-                <?php foreach($movies as $movie) :?>
+                <?php foreach($queryReturn as $movie) :?>
                         <div class="movie">
                         <?php if(isset($movie['seriesName'])) : ?>
                                 <?php $series = $movie['seriesName']?>
@@ -136,10 +150,9 @@
         <li class="page-item disabled">
         <a class="page-link" href="#" tabindex="-1">Previous</a>
         </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
+        <?php for($page = 1; $page <= $number_of_pages; $page++) : ?>
+        <li class="page-item"><a class="page-link" href="index.php?page=<?=$page?>" ><?=$page?></a></li>
+        <?php endfor?>
         <a class="page-link" href="#">Next</a>
         </li>
     </ul>
