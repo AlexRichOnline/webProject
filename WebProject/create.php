@@ -10,6 +10,12 @@
     if(isset($_SESSION['emptyEntry'])){
         $errorFlag = true;
     }
+
+    require 'connect.php';
+    $query = "SELECT * FROM genres";
+    $statement = $db->prepare($query);
+    $statement->execute();
+    $genres = $statement->fetchAll();
 ?>
 
 
@@ -70,19 +76,6 @@
                 <?=$_SESSION['emptyEntry'] ?>
                 <?php session_destroy() ?>
             <?php endif?>
-            <!-- <form action="process_post.php" method="post">
-                    <label for="title" >Title</label>
-                    <input name="title" id="title" type="text">
-                    <label for="rating">Rating out of 5</label>
-                    <input name="rating" id="rating" max="5" min="0" type="number">
-                    <label for "released">Year</label>
-                    <input id="released" name="released" type="text">
-                    <label for="genre">Genre{s}</label>
-                    <input name="genre" id="genre" type="textarea">
-                    <label for="series">Series Name: {Optional}</label>
-                    <input name="series" id="series" type="text">
-                    <input type="submit" name="create" value="create">
-            </form> -->
 <form class="form-horizontal" method="post" action="process_post.php">
 <fieldset>
 <!-- Form Name -->
@@ -114,13 +107,28 @@
   </div>
 </div>
 
-<!-- Textarea -->
+<!-- Textarea
 <div class="form-group">
   <label class="col-md-4 control-label" for="genre">Genre{s}</label>
   <div class="col-md-4">                     
     <textarea class="form-control" placeholder="Action, Comedy, Spy" id="genre" name="genre"></textarea>
   </div>
+</div> -->
+
+<!-- Multiple Checkboxes -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="genre">Available Genres:</label>
+  <?php foreach($genres as $genre) : ?>
+  <div class="col-md-4">
+    <label class="checkbox-inline" for="<?=$genre['genreID']?>">
+      <input type="checkbox" name="genre<?=$genre['genreID']?>" id="<?=$genre['genreID']?>" value="<?=$genre['genreName']?>">
+      <?=$genre['genreName']?>
+    </label>
+	</div>
+  <?php endforeach?>
 </div>
+
+
 <!-- Multiple Checkboxes (inline) -->
 <div class="form-group">
   <label class="col-md-4 control-label" for="checkbox-inline">Add a Image:</label>

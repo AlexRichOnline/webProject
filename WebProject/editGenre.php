@@ -101,7 +101,7 @@
                     <div class="col-md-4">
                         <input type="hidden" name="genreID" value="<?=$genreID?>"/>
                         <button type="submit" id="editGenre" name="editGenre" value="edit" class="btn btn-success">Update Genre</button>
-                        <button type="submit" id="deleteGenre" name="delteGenre" value="delete" class="btn btn-danger">Delete Genre</button>
+                        <button type="submit" id="deleteGenre" name="deleteGenre" value="delete" class="btn btn-danger">Delete Genre</button>
                     </div>
                 </div>
             </fieldset>

@@ -1,55 +1,27 @@
 <?php
-    require 'connect.php';
     session_start();
-   
+    if(!isset($_SESSION['loggedOn'])){
+        header("location: login.php");
+        exit;
+    }
+
+    require 'connect.php';
     $orderBy = "movieID";
     $allRecords = false;
 
     $ascention = "DESC";
     $sortBy = null;
 
-    if(isset($_GET['sort'])){
-        if($_GET['sort'] == "year" ){
-            $orderBy = "released";
-            $ascention = "ASC";
-            $sortBy = "Oldest to Newest by Year";
-        }
-        else if($_GET['sort'] == "name"){
-            $orderBy = "title";
-            $ascention = "ASC";
-            $sortBy = "Alphabetically Arranged by Title";
-        } 
-        else if($_GET['sort'] == "time"){
-            $orderBy = "movieID";
-            $ascention = "DESC";
-            $sortBy = "Reverse Chronological Order of Movies that were added to the system";
-        }
-    }
-
     $select = "SELECT * FROM movies ORDER BY $orderBy $ascention";
     $statement = $db->prepare($select);
     $statement->execute();
     $returnSet = $statement->fetchAll();
 
-   $results_per_page = 10;
+    $query = "SELECT * FROM genres";
+    $prepQuery = $db->prepare($query);
+    $prepQuery->execute();
+    $genres = $prepQuery->fetchAll();
 
-   $number_of_results = $statement->rowCount();
-
-   $number_of_pages = ceil($number_of_results/$results_per_page);
-
-   if(!isset($_GET['page'])){
-       $page = 1;
-   }
-   else{
-       $page = $_GET['page'];
-   }
-
-   $this_page_first_result = ($page - 1) * $results_per_page;
-
-   $query = "SELECT * FROM movies ORDER BY $orderBy $ascention LIMIT $this_page_first_result,$results_per_page";
-   $queryStatement = $db->prepare($query);
-   $queryStatement->execute();
-   $queryReturn = $queryStatement->fetchAll();
 ?>
 
 <!DOCTYPE html>
@@ -71,9 +43,6 @@
         <header id="top">
             <h1>Medium Movie Reviews</h1>
         </header>
-        <?php if(isset($_SESSION['username'])) :?>
-                <p><?=$_SESSION['username']?></p>
-        <?php endif?>
         <ul class="nav nav-pills">
             <li class="nav-item">
                 <a class="nav-link active" href="index.php">Home</a>
@@ -83,9 +52,6 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">About Us</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="search.php">Browse Movies</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="create.php">Add a Movie</a>
@@ -112,56 +78,30 @@
             <?php endif?>
         </ul>
         <div id="content">
-        <h2>Medium Movies - Home</h2>
-            <?php if(isset($_SESSION['denied'])) :?>
-            <p>Access Denied: Requires logged on Administrator</p>
-            <?php $_SESSION['denied'] = null ?>
-            <?php endif?>
-            <h2>Movie Listings:</h2>
-            <select id="sort">
+        <h2>Medium Movies - Lookup Movies</h2>
+        <h3>Arranged by: <?=$sortBy?></h3>
+        <form class="form-horizontal">
+        <select id="sort">
                 <option value="" disaled>Sort by:</option>
                 <option value ="name">By Title</option>
                 <option value ="year">By Year</option>
                 <option value ="time">By Order Added</option>
             </select>
-            <h3>Arranged by: <?=$sortBy?></h3>
-            <div class="container">
-            <div id="movies" class="row">
-                <?php foreach($queryReturn as $movie) :?>
-                        <div class="col-sm">
-                        <?php if(isset($movie['seriesName'])) : ?>
-                                <?php $series = $movie['seriesName']?>
-                            <?php endif ?>
-                        <?php if (isset($series)) : ?>
-                            <h3><a href="moviePage.php?id=<?=$movie['movieID']?>"><?=$movie['title']?></a> - <?=$movie['released']?> - <?=$series?> Series</h3>
-                        <?php $series = null ?>
-                        <?php else :?>
-                            <h3><a href="moviePage.php?id=<?=$movie['movieID']?>"><?=$movie['title']?></a> - <?=$movie['released']?></h3>
-                        <?php endif?>
-                            <p>
-                                <small>
-                                    <?=$movie['genre']?>
-                                    <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a>
-                                </small>
-                            </p>
-                            <p>Rating: <?=$movie['rating']?> out of 5</p>
-                        </div>
-                    <?php endforeach?>
-            
+        </form>
+            <form class="form-horizontal">
+            <!-- Select Basic -->
+            <div class="form-group">
+            <label class="col-md-4 control-label" for="selectbasic">Pick a Genre: </label>
+            <div class="col-md-5">
+            <select id="selectbasic" name="selectbasic" class="form-control">
+            <?php foreach($genres as $genre) : ?>
+                <option value="<?=$genre['genreName']?>"><?=$genre['genreName']?></option>
+            <?php endforeach?>
+            </select>
             </div>
             </div>
-            <nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
-        <li class="page-item disabled">
-        <a class="page-link" href="#" tabindex="-1">Previous</a>
-        </li>
-        <?php for($page = 1; $page <= $number_of_pages; $page++) : ?>
-        <li class="page-item"><a class="page-link" href="index.php?page=<?=$page?>" ><?=$page?></a></li>
-        <?php endfor?>
-        <a class="page-link" href="#">Next</a>
-        </li>
-    </ul>
-    </nav>
+        </form>
+
         </div>
         <div id="botNav">
             <footer>

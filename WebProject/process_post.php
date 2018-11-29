@@ -19,9 +19,9 @@
         $series = filter_input(INPUT_POST, 'series', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     }
 
-
+    //|| empty($_POST['genre'])
     function redirect($page){
-        if(empty($_POST['title']) || empty($_POST['released']) || empty($_POST['rating']) || empty($_POST['genre']) ){
+        if(empty($_POST['title']) || empty($_POST['released']) || empty($_POST['rating'])  ){
             $_SESSION['emptyEntry'] = "We were unable to complete your request ensure the title, rating, year and genre{s} are not empty";
             header("location: $page");
             exit;
@@ -40,7 +40,7 @@
         $insertStatement->bindValue(':genre', $genre);
         $insertStatement->bindValue(':series', $series);
 
-        $insertStatement->execute();
+        //$insertStatement->execute();
 
         if(isset($_POST['addImage'])) {
             $select = "SELECT * FROM movies WHERE title = :title";
@@ -52,8 +52,8 @@
             exit;
         }
 
-        header("location: index.php");
-        exit;
+        //header("location: index.php");
+        //exit;
     }
     else if(isset($_POST['delete'])){
         $delete = "DELETE FROM movies WHERE movieID = :id";
