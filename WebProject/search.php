@@ -147,7 +147,7 @@
       </div>
       <div>
       
-      <h3>Sorted By: <?=$sortBy?></h3>
+      <h3>Sorted By: <span style="color: #00b8e6" ><?=$sortBy?></span></h3>
       </div>
         </form>
         <?php if($like != null) : ?>

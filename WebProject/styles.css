@@ -5,7 +5,7 @@ html{
 
 body{
     background-color:#2E3034;
-    width: 1200px;
+    width: 900px;
     margin: 0px auto;
     padding: 0px;
     min-width: 800px;
@@ -540,7 +540,7 @@ a:hover{
     background-color:gold;
 }
 
-.movie{
+#movie{
     border: 2px solid rgb(49, 145, 255);;
     border-radius: 12px;
     display: inline-block;
@@ -551,4 +551,9 @@ a:hover{
 #search{
    margin: 0px auto;
    
+}
+
+
+p{
+    font-family: Calibri
 }

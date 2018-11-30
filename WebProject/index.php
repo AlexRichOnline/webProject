@@ -2,31 +2,8 @@
     require 'connect.php';
     session_start();
    
-    $orderBy = "movieID";
-    $allRecords = false;
 
-    $ascention = "DESC";
-    $sortBy = null;
-
-    if(isset($_GET['sort'])){
-        if($_GET['sort'] == "year" ){
-            $orderBy = "released";
-            $ascention = "ASC";
-            $sortBy = "Oldest to Newest by Year";
-        }
-        else if($_GET['sort'] == "name"){
-            $orderBy = "title";
-            $ascention = "ASC";
-            $sortBy = "Alphabetically Arranged by Title";
-        } 
-        else if($_GET['sort'] == "time"){
-            $orderBy = "movieID";
-            $ascention = "DESC";
-            $sortBy = "Reverse Chronological Order of Movies that were added to the system";
-        }
-    }
-
-    $select = "SELECT * FROM movies ORDER BY $orderBy $ascention";
+    $select = "SELECT * FROM movies";
     $statement = $db->prepare($select);
     $statement->execute();
     $returnSet = $statement->fetchAll();
@@ -46,7 +23,7 @@
 
    $this_page_first_result = ($page - 1) * $results_per_page;
 
-   $query = "SELECT * FROM movies ORDER BY $orderBy $ascention LIMIT $this_page_first_result,$results_per_page";
+   $query = "SELECT * FROM movies ORDER BY movieID DESC LIMIT $this_page_first_result,$results_per_page";
    $queryStatement = $db->prepare($query);
    $queryStatement->execute();
    $queryReturn = $queryStatement->fetchAll();
@@ -82,7 +59,7 @@
                 <a class="nav-link" href="profile.php">My Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">About Us</a>
+                <a class="nav-link" href="about.php">About Us</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="search.php">Browse Movies</a>
@@ -118,10 +95,11 @@
             <?php $_SESSION['denied'] = null ?>
             <?php endif?>
             <h2>Movie Listings:</h2>
-            <div class="">
-            <div id="movies" class="">
+            <div class="container">
+            <div id="movies">
                 <?php foreach($queryReturn as $movie) :?>
-                        <div class="movie">
+                        <div class ="row" id="movie">
+                        
                         <?php if(isset($movie['seriesName'])) : ?>
                                 <?php $series = $movie['seriesName']?>
                             <?php endif ?>
