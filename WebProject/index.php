@@ -118,13 +118,6 @@
             <?php $_SESSION['denied'] = null ?>
             <?php endif?>
             <h2>Movie Listings:</h2>
-            <select id="sort">
-                <option value="" disaled>Sort by:</option>
-                <option value ="name">By Title</option>
-                <option value ="year">By Year</option>
-                <option value ="time">By Order Added</option>
-            </select>
-            <h3>Arranged by: <?=$sortBy?></h3>
             <div class="">
             <div id="movies" class="">
                 <?php foreach($queryReturn as $movie) :?>

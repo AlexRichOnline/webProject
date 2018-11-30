@@ -7,20 +7,58 @@
 
     require 'connect.php';
     $orderBy = "movieID";
-    $allRecords = false;
+    // $allRecords = false;
 
-    $ascention = "DESC";
-    $sortBy = null;
+    // $ascention = "DESC";
+    // $sortBy = null;
 
-    $select = "SELECT * FROM movies ORDER BY $orderBy $ascention";
-    $statement = $db->prepare($select);
-    $statement->execute();
-    $returnSet = $statement->fetchAll();
+    // $select = "SELECT * FROM movies ORDER BY $orderBy $ascention";
+    // $statement = $db->prepare($select);
+    // $statement->execute();
+    // $returnSet = $statement->fetchAll();
 
     $query = "SELECT * FROM genres";
     $prepQuery = $db->prepare($query);
     $prepQuery->execute();
     $genres = $prepQuery->fetchAll();
+
+
+      
+    $orderBy = "movieID";
+    $ascention = "DESC";
+    $sortBy = null;
+
+    if(isset($_POST['sort'])){
+        if($_POST['sort'] == "year" ){
+            $orderBy = "released";
+            $ascention = "ASC";
+            $sortBy = "Oldest to Newest by Year";
+        }
+        else if($_POST['sort'] == "name"){
+            $orderBy = "title";
+            $ascention = "ASC";
+            $sortBy = "Alphabetically Arranged by Title";
+        } 
+        else if($_POST['sort'] == "time"){
+            $orderBy = "movieID";
+            $ascention = "DESC";
+            $sortBy = "Reverse Chronological Order of Movies that were added to the system";
+        }
+    }
+
+    $like = null;
+
+    if(isset($_POST)){
+        $like = filter_input(INPUT_POST, 'genre', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $order = filter_input(INPUT_POST, 'sort', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    }
+        $movies = "SELECT * FROM movies ORDER BY $orderBy $ascention";
+        $prepMovies = $db->prepare($movies);
+        $prepMovies->execute();
+        $results = $prepMovies->fetchAll();
+    //}
+    
+    
 
 ?>
 
@@ -79,30 +117,58 @@
         </ul>
         <div id="content">
         <h2>Medium Movies - Lookup Movies</h2>
-        <h3>Arranged by: <?=$sortBy?></h3>
-        <form class="form-horizontal">
-        <select id="sort">
+        <?php if(isset($like)): ?>
+        <h3>Browse: <span style="color: gold"><?=$like?></span></h3>
+        <?php else : ?>
+        <h3>Browse: Category</h3>
+        <?php endif?>
+        
+        <form  method="post" action="search.php" class="form-horizontal">
+              <!-- Select Basic -->
+              <div class="form-group" id ="search">
+            <label class="col-md-4 control-label" for="selectbasic">Pick a Genre: </label>
+            <div class="col-md-5">
+            <select id="selectbasic" name="genre" class="form-control">
+            <?php foreach($genres as $genre) : ?>
+                <option name="<?=$genre['genreName']?>" value="<?=$genre['genreName']?>"><?=$genre['genreName']?></option>
+            <?php endforeach?>
+            <div class="dropdown-divider"></div>
+                <option value="All">Show All</option>
+            </select>
+            </div>
+            <div class="col-md-5">
+        <select name = "sort">
                 <option value="" disaled>Sort by:</option>
                 <option value ="name">By Title</option>
                 <option value ="year">By Year</option>
                 <option value ="time">By Order Added</option>
             </select>
+            <button id="search" name="search" type="submit" class="btn btn-warning">Search</button>
+      </div>
+      <div>
+      
+      <h3>Sorted By: <?=$sortBy?></h3>
+      </div>
         </form>
-            <form class="form-horizontal">
-            <!-- Select Basic -->
-            <div class="form-group">
-            <label class="col-md-4 control-label" for="selectbasic">Pick a Genre: </label>
-            <div class="col-md-5">
-            <select id="selectbasic" name="selectbasic" class="form-control">
-            <?php foreach($genres as $genre) : ?>
-                <option value="<?=$genre['genreName']?>"><?=$genre['genreName']?></option>
-            <?php endforeach?>
-            </select>
-            </div>
-            </div>
-        </form>
-
+        <?php if($like != null) : ?>
+        <?php if($like == "All") : ?>
+        <ul>
+         <?php foreach($results as $result) : ?>
+         <li><a href="moviePage.php?id=<?=$result['movieID']?>"><?=$result['title']?></a> - <?=$result['released']?></li>
+        <?php endforeach?>
+        </ul>
+        <?php else : ?>
+        <ul>
+         <?php foreach($results as $result) : ?>
+         <?php if(strpos($result['genre'], $_POST['genre']) !== false ) : ?>
+         <li><a href="moviePage.php?id=<?=$result['movieID']?>"><?=$result['title']?></a> - <?=$result['released']?></li>
+         <?php endif?>
+        <?php endforeach?>
+        </ul>
+        <?php endif?>
+        <?php endif?>
         </div>
+</div>
         <div id="botNav">
             <footer>
                 <nav>
@@ -115,6 +181,5 @@
                 </nav>
             </footer>
         </div>
-    </div>
 </body>
 </html>
