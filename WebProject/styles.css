@@ -37,14 +37,14 @@ header{
         padding: 0;
     }
 
-#container{
+/* #container{
     background-color: #3D4045;
     width: 100%;
     margin: 0px auto;
     font-family: Calibri;
     margin-top: 100px;
-    border: 2px solid black;
-}
+    border: 2px solid white;
+} */
 
     #content{
         width: 90%;
@@ -538,5 +538,13 @@ a{
 a:hover{
     color:#3D4045;
     background-color:gold;
+}
+
+.movie{
+    border: 2px solid rgb(49, 145, 255);;
+    border-radius: 12px;
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
 }
 

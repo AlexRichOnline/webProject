@@ -2,7 +2,8 @@
     require 'connect.php';
 
     session_start();
-    $_SESSION['emptyEntry'];
+    $_SESSION['emptyEntry'] = null;
+    $errorFlag = false;
 
     $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -10,22 +11,62 @@
 
     $released = filter_input(INPUT_POST, 'released', FILTER_VALIDATE_INT);
 
-    $genre = filter_input(INPUT_POST, 'genre', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    //$genre = filter_input(INPUT_POST, 'genre', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
     $movieID = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+
+    $unique = "SELECT * FROM movies WHERE title = :title";
+    $prepUnique = $db->prepare($unique);
+    $prepUnique->bindValue(':title', $title);
+    $prepUnique->execute();
+    $movieCount = $prepUnique->rowCount();
+
+    if($movieCount > 0){
+        $_SESSION['movieExists'] = "Sorry that movie title already exists in the system";
+        header("location: create.php");
+        exit;
+    }
 
     $series = null;
     if(isset($_POST['series']) && !empty($_POST['series'])){
         $series = filter_input(INPUT_POST, 'series', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     }
-
+    
+    
     //|| empty($_POST['genre'])
     function redirect($page){
-        if(empty($_POST['title']) || empty($_POST['released']) || empty($_POST['rating'])  ){
+        if(empty($_POST['title']) || empty($_POST['released']) || empty($_POST['rating'])){
             $_SESSION['emptyEntry'] = "We were unable to complete your request ensure the title, rating, year and genre{s} are not empty";
             header("location: $page");
             exit;
         }
+    }
+
+    $genreCount = "SELECT MAX(genreID) AS max_id FROM genres";
+    $prepCount = $db->prepare($genreCount);
+    $prepCount->execute();
+    $row = $prepCount->fetchAll();
+    $count = $row[0]['max_id'] + 1;
+   
+    $firstGenre = false;
+    for($i = 1; $i < $count; $i++){
+        if(isset($_POST['genre' . $i])){
+            if(!$firstGenre){
+                $genre = filter_input(INPUT_POST, 'genre' . $i, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                $firstGenre = true;
+            }
+            else{
+                $genre = $genre . ", " . filter_input(INPUT_POST, 'genre' . $i, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            } 
+        }
+    }
+
+    
+
+    if(!isset($genre)){
+        $_SESSION['noGenre'] = "You must select at least one of the available genres";
+        header("location: create.php");
+        exit;
     }
 
     if(isset($_POST['create'])){
@@ -40,7 +81,7 @@
         $insertStatement->bindValue(':genre', $genre);
         $insertStatement->bindValue(':series', $series);
 
-        //$insertStatement->execute();
+        $insertStatement->execute();
 
         if(isset($_POST['addImage'])) {
             $select = "SELECT * FROM movies WHERE title = :title";
@@ -52,8 +93,8 @@
             exit;
         }
 
-        //header("location: index.php");
-        //exit;
+        header("location: index.php");
+        exit;
     }
     else if(isset($_POST['delete'])){
         $delete = "DELETE FROM movies WHERE movieID = :id";
@@ -94,5 +135,8 @@
 <body>
    <?=print_r($_POST)?>
    <p><?=$movieID?></p>
+   <p>genre: <?=($genre)?></p>
+   <p>count: <?=$row[0]['max_id']?></p>
+   <p>row: <?=print_r($row)?></p>
 </body>
 </html>

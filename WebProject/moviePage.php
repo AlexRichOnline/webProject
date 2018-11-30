@@ -75,8 +75,8 @@
             <?php endif?>
         </ul>
         <div id="content">
-            <div id="movies">
-                <div class="movie">
+            <div id="">
+                <div class="">
                 <?php if(isset($_SESSION['admin'])) :?>
                     <h1><?=$movie['title']?> - <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a> - <a href="addImage.php?id=<?=$movie['movieID']?>">Add an Image</a></h1>
                 <?php else : ?>

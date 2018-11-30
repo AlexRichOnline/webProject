@@ -12,7 +12,7 @@
     }
 
     require 'connect.php';
-    $query = "SELECT * FROM genres";
+    $query = "SELECT * FROM genres ORDER BY genreID";
     $statement = $db->prepare($query);
     $statement->execute();
     $genres = $statement->fetchAll();
@@ -75,6 +75,14 @@
             <?php if($errorFlag) : ?>
                 <?=$_SESSION['emptyEntry'] ?>
                 <?php session_destroy() ?>
+            <?php endif?>
+            <?php if(isset($_SESSION['noGenre'])) : ?>
+                <?=$_SESSION['noGenre']?>
+                <?php $_SESSION['noGenre'] = null ?>
+            <?php endif?>
+            <?php if(isset($_SESSION['movieExists'])) : ?>
+                <?=$_SESSION['movieExists']?>
+                <?php $_SESSION['movieExists'] = null ?>
             <?php endif?>
 <form class="form-horizontal" method="post" action="process_post.php">
 <fieldset>

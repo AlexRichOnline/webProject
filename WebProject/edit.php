@@ -20,9 +20,19 @@
     $statement->bindValue(":id", $movieID, PDO::PARAM_INT);
     $statement->execute();
     $result = $statement->fetch();
+
+    $gQuery = "SELECT * FROM genres ORDER BY genreID";
+    $gStatement = $db->prepare($gQuery);
+    $gStatement->execute();
+    $genres = $gStatement->fetchAll();
+
+    $image = "SELECT * FROM images WHERE movieID = $movieID";
+    $prepImage = $db->prepare($image);
+    $prepImage->execute();
+    $count = $prepImage->fetch();
 ?>
 
-
+     
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -73,35 +83,113 @@
             </li>
             <?php endif?>
         </ul>
-        <section id="content">
-        <h2>Medium Movies - Edit Movie</h2>
-         <form action="process_post.php" method="post">
-         <fieldset>
-            <p>
-                <?php if($errorFlag) : ?>
-                    <?=$_SESSION['emptyEntry']?>
-                    <?php session_destroy() ?>
-                <?php endif ?>
-                <label for="title">Title:</label>
-                <input name="title" id="title" value="<?=$result['title']?>" />
-                <label for "released">Year:</label>
-                <input id="released" name="released" type="text" value="<?=$result['released']?>">
-                <label for="rating">Rating out of 5:</label>
-                <input name="rating" id="rating" max="5" min="0" type="number" value="<?=$result['rating']?>">
-                <label for="series">Series Name: {Optional}</label>
-                <input name="series" id="series" type="text" value="<?=$result['seriesName']?>">
-            </p>
-            <p>
-                <label for="genre">Genre{s}:</label>
-                <textarea name="genre" id="genre"><?=$result['genre']?></textarea>
-            </p>
-            <p>
-                <input type="hidden" name="id" value="<?=$result['movieID']?>" />
-                <input type="submit" name="update" value="Update" />
-                <input type="submit" name="delete" value="Delete" onclick="return confirm('Are you sure you wish to delete this post?')" />
-            </p>
-            </fieldset>
-        </form>
+        <div id="content">
+        <h2>Medium Movies - Edit: <span style="color: #00b8e6" ><?=$result['title']?></span> </h2>
+            <?php if($errorFlag) : ?>
+                <?=$_SESSION['emptyEntry'] ?>
+                <?php $_SESSION['emptyEntry'] = null ?>
+            <?php endif?>
+            <?php if(isset($_SESSION['noGenre'])) : ?>
+                <?=$_SESSION['noGenre']?>
+                <?php $_SESSION['noGenre'] = null ?>
+            <?php endif?>
+            <?php if(isset($_SESSION['movieExists'])) : ?>
+                <?=$_SESSION['movieExists']?>
+                <?php $_SESSION['movieExists'] = null ?>
+            <?php endif?>
+<form class="form-horizontal" method="post" action="process_post.php">
+<fieldset>
+<!-- Form Name -->
+<legend>Edit the Movie:</legend>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="title">Movie Title:</label>  
+  <div class="col-md-4">
+  <input id="textinput" name="title" id="title" name="title" value="<?=$result['title']?>" type="text" placeholder="The Film" class="form-control input-md"> 
+  </div>
+</div>
+
+<label class="col-md-4 control-label" for="rating">Rate this film:</label>
+            <div class="col-md-4">
+                <select id="rating" name="rating" class="form-control">
+                <?php if($result['rating'] == 1) : ?>
+                    <option selected value="1">one star</option>
+                <?php else :?>
+                    <option value="1">one star</option>
+                <?php endif?>
+                <?php if($result['rating'] == 2) : ?>
+                          <option selected value="2">two star</option>
+                    <?php else :?>
+                          <option value="2">two star</option>
+                    <?php endif?>
+                    <?php if($result['rating'] == 3) : ?>
+                          <option selected value="3">three star</option>
+                    <?php else :?>
+                          <option value="3">three star</option>
+                    <?php endif?>
+                    <?php if($result['rating'] == 4) : ?>
+                          <option selected value="4">four star</option>
+                    <?php else :?>
+                           <option value="4">four star</option>
+                    <?php endif?>
+                    <?php if($result['rating'] == 5) : ?>
+                          <option selected value="5">five star</option>
+                    <?php else :?>
+                          <option value="5">five star</option>
+                    <?php endif?>
+                </select>
+            </div>
+
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="released">Year:</label>  
+  <div class="col-md-4">
+  <input id="released" name="released" type="text" value="<?=$result['released']?>" placeholder="2XXX" class="form-control input-md">
+  </div>
+</div>
+
+<!-- Textarea
+<div class="form-group">
+  <label class="col-md-4 control-label" for="genre">Genre{s}</label>
+  <div class="col-md-4">                     
+    <textarea class="form-control" placeholder="Action, Comedy, Spy" id="genre" name="genre"></textarea>
+  </div>
+</div> -->
+
+<!-- Multiple Checkboxes -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="genre">Available Genres:</label>
+  <?php foreach($genres as $genre) : ?>
+  <div class="col-md-4">
+    <label class="checkbox-inline" for="<?=$genre['genreID']?>">
+    <?php if(strpos($result['genre'], $genre['genreName']) !== false ) : ?>
+      <input type="checkbox" checked name="genre<?=$genre['genreID']?>" id="<?=$genre['genreID']?>" value="<?=$genre['genreName']?>">
+    <?php else: ?>
+      <input type="checkbox" name="genre<?=$genre['genreID']?>" id="<?=$genre['genreID']?>" value="<?=$genre['genreName']?>">
+    <?php endif?>
+      <?=$genre['genreName']?>
+    </label>
+	</div>
+  <?php endforeach?>
+</div>
+<?php if($count == null ) : ?>
+<!-- Multiple Checkboxes (inline) -->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="checkbox-inline">Add a Image:</label>
+  <div class="col-md-4">
+    <label class="checkbox-inline" for="addImage">
+      <input type="checkbox" name="addImage" id="addImage" value="yes">
+      Yes
+    </label>
+  </div>
+</div>
+<?php endif?>
+</fieldset>
+<div class="form-group">
+<button type="submit" name="create" value="create" class="btn btn-outline-success">Add Movie</button>
+
+</form>
+</div>
         <div id="botNav">
             <footer>
                 <nav>

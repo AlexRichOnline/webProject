@@ -24,6 +24,8 @@
     $genreID = filter_input(INPUT_POST, 'genreID', FILTER_SANITIZE_NUMBER_INT);  
     $genreName = filter_input(INPUT_POST, 'genreName', FILTER_SANITIZE_FULL_SPECIAL_CHARS); 
 
+  
+
     if(isset($_POST['addGenre'])){
 
         redirect("Genre.php");
@@ -74,5 +76,6 @@
 </head>
 <body>
     <?=print_r($_POST)?>
+    
 </body>
 </html>

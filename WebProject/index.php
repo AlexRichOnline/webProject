@@ -125,10 +125,10 @@
                 <option value ="time">By Order Added</option>
             </select>
             <h3>Arranged by: <?=$sortBy?></h3>
-            <div class="container">
-            <div id="movies" class="row">
+            <div class="">
+            <div id="movies" class="">
                 <?php foreach($queryReturn as $movie) :?>
-                        <div class="col-sm">
+                        <div class="movie">
                         <?php if(isset($movie['seriesName'])) : ?>
                                 <?php $series = $movie['seriesName']?>
                             <?php endif ?>
