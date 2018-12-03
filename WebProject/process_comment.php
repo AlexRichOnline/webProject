@@ -48,8 +48,9 @@
         if(isset($_POST['add'])){    
             
             redirect("moviePage.php?id=" . $movieID);
-
+            
             if(!$errorFlag){
+
                 $insert = "INSERT INTO comments (text, rating, movieID, accountID, username) values (:text, :rating, :movieID, :accountID, :username)";
                 $insertStatement = $db->prepare($insert);
             
@@ -59,6 +60,20 @@
                 $insertStatement->bindValue(':accountID', $accountID);
                 $insertStatement->bindValue(':username', $_SESSION['username']);
                 $insertStatement->execute();
+
+                
+                $select = "SELECT AVG(rating) AS avg_rating FROM comments WHERE movieID = :movieID";
+                $prepSelect = $db->prepare($select);
+                $prepSelect->bindValue(':movieID', $movieID);
+                $prepSelect->execute();
+                $row = $prepSelect->fetchAll();
+                echo $avgRating = $row[0]['avg_rating'];
+    
+                $update = "UPDATE movies SET rating = :rating WHERE movieID = :movieID";
+                $updateStatement = $db->prepare($update);
+                $updateStatement->bindValue(':rating', $avgRating);
+                $updateStatement->bindValue(':movieID', $movieID);
+                $updateStatement->execute();
 
                 header("location: moviePage.php?id=" . $movieID);
                 exit;
@@ -89,5 +104,8 @@
 </head>
 <body>
     <?=print_r($_POST)?>
+    <?php if(isset($avgRating)) : ?>
+    <?=$avgRating?>
+    <?php endif?>
 </body>
 </html>

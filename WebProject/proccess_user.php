@@ -7,7 +7,7 @@
         header("location: index.php");
         exit;
     }
-    $_SESSION['emptyEntry'];
+    $_SESSION['emptyEntry'] = null;
 
     $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -36,7 +36,7 @@
 
         $insertStatement = $db->prepare($insert);
         $insertStatement->bindValue(':username', $username);
-        $insertStatement->bindValue(':pass', $pass);
+        $insertStatement->bindValue(':pass', password_hash($pass, PASSWORD_DEFAULT));
         $insertStatement->bindValue(':admin', $admin);
 
         $insertStatement->execute();
@@ -70,14 +70,17 @@
     }
 
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Process User</title>
 </head>
 <body>
+    
 </body>
 </html>

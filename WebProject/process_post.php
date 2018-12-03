@@ -21,11 +21,13 @@
     $prepUnique->execute();
     $movieCount = $prepUnique->rowCount();
 
-    if($movieCount > 0){
-        $_SESSION['movieExists'] = "Sorry that movie title already exists in the system";
-        header("location: create.php");
-        exit;
-    }
+    if($_POST['create']){
+        if($movieCount > 0){
+            $_SESSION['movieExists'] = "Sorry that movie title already exists in the system";
+            header("location: create.php");
+            exit;
+        }
+   }
 
     $series = null;
     if(isset($_POST['series']) && !empty($_POST['series'])){
@@ -134,9 +136,10 @@
 </head>
 <body>
    <?=print_r($_POST)?>
-   <p><?=$movieID?></p>
+   <p>Movie ID: <?=$movieID?></p>
    <p>genre: <?=($genre)?></p>
    <p>count: <?=$row[0]['max_id']?></p>
    <p>row: <?=print_r($row)?></p>
+   
 </body>
 </html>

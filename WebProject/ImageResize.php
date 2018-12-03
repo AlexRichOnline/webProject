@@ -1,8 +1,14 @@
 <?php
-
 namespace Gumlet;
 
 use Exception;
+
+session_start();
+if($_SESSION['admin'] != true){
+    $_SESSION['denied'] = true;
+    header("location: index.php");
+    exit;
+}
 
 /**
  * PHP class to resize and scale images

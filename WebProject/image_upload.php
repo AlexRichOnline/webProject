@@ -21,6 +21,9 @@
         $deleteStatement->bindValue(':movieID', $movieID, PDO::PARAM_INT);
         $deleteStatement->execute();
         unlink("uploads/" . $_POST['deleteImage'] );
+
+        header("location: moviePage.php?id=" . $movieID);
+        exit;
      }
      else if(isset($_POST['uploadImage'])){
 
@@ -97,7 +100,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>File Upload Challenge</title>
+    <title>Image Upload </title>
 </head>
 <body>
     <?php if(isset($_POST['uploadImage'])) : ?>

@@ -29,11 +29,11 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Home Page</title>
+    <title>Movie Page</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit-no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link href="styles.css" rel="stylesheet" type="text/css" media="screen" />
-    <script type="text/javascript" src="javascript/medium.js"></script>
+    <script  src="javascript/medium.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
@@ -43,19 +43,35 @@
         <header id="top">
             <h1>Medium Movie Reviews</h1>
         </header>
+        <?php if(isset($_SESSION['username'])) :?>
+                <h4><span style="color: #00b8e6"><?=$_SESSION['username']?></span></h4>
+        <?php endif?>
         <ul class="nav nav-pills">
             <li class="nav-item">
                 <a class="nav-link active" href="index.php">Home</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="about.php">About Us</a>
+            </li>
+            <?php if(isset($_SESSION['loggedOn'])) : ?>
+            <li class="nav-item">
                 <a class="nav-link" href="profile.php">My Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">About Us</a>
+                <a class="nav-link" href="search.php">Browse Movies</a>
             </li>
+            <?php endif?>
+            <?php if(isset($_SESSION['admin'])) :?>
             <li class="nav-item">
                 <a class="nav-link" href="create.php">Add a Movie</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="Genre.php">Add Genre</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="newuser.php">Create User</a>
+            </li>
+            <?php endif?>
             <?php if(!isset($_SESSION['loggedOn'])) : ?>
             <li class="nav-item">
                 <a class="nav-link" href="login.php">Login</a>
@@ -68,29 +84,27 @@
                 <a class="nav-link" href="logout.php">Logout</a>
             </li>
             <?php endif?>
-            <?php if(isset($_SESSION['admin'])) :?>
-            <li class="nav-item">
-                <a class="nav-link" href="newuser.php">Create User</a>
-            </li>
-            <?php endif?>
         </ul>
-        <div id="content">
-            <div id="">
-                <div class="">
-                <?php if(isset($_SESSION['admin'])) :?>
+    </div>
+    <div id="content">
+        <div class="container">
+            <?php if(isset($_SESSION['admin'])) :?>
+                <?php if($file == NULL ): ?>
                     <h1><?=$movie['title']?> - <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a> - <a href="addImage.php?id=<?=$movie['movieID']?>">Add an Image</a></h1>
                 <?php else : ?>
+                        <h1><?=$movie['title']?> - <a href="edit.php?id=<?=$movie['movieID']?>">Edit Movie</a></h1>
+                <?php endif?>
+            <?php else : ?>
                 <h1><?=$movie['title']?></h1>
-                <?php endif ?>
-                    <h3><?=$movie['title']?> is an  <?=$movie['genre']?> movie that was made in  <?=$movie['released']?>.</h3>
-                    <?php $series = $movie['seriesName']?>
-                    <?php if (isset($series)) : ?>
-                    <?php $series = null ?>
-                        <h4><?=$movie['title']?> is a part of the  <?=$movie['seriesName']?> franchise.</h4>
-                    <?php endif?>  
-                        <h4><?=$movie['title']?>'s current rating: <span style="color:gold"><?=$movie['rating']?></span> out of 5</h4>
-                </div>
-    <form method="post" action="process_comment.php" class="form-horizontal">
+            <?php endif ?>
+                <h3><?=$movie['title']?> is an  <?=$movie['genre']?> movie that was made in  <?=$movie['released']?>.</h3>
+                <?php $series = $movie['seriesName']?>
+                <?php if (isset($series)) : ?>
+                <?php $series = null ?>
+                    <h4><?=$movie['title']?> is a part of the  <?=$movie['seriesName']?> franchise.</h4>
+                <?php endif?>  
+                    <h4><?=$movie['title']?>'s current rating: <span style="color:gold"><?=$movie['rating']?></span> out of 5</h4>
+        <form method="post" action="process_comment.php" class="form-horizontal">
         <!-- Textarea -->
         <div class="form-group">
             <?php if(isset($_SESSION['emptyEntry'])) :?>
@@ -136,7 +150,8 @@
                 </form>
             <?php endif?>
     <?php endif?>
-</div>
+  </div>
+    <div>
     <h1><span style="color: #00b8e6">All Comments for <?=$movie['title']?>:</span></h1>
     <?php foreach($comments as $comment) :?>
     <div class="comment">
@@ -144,34 +159,34 @@
         <h5><?=$comment['username']?>: "<?=$comment['text']?>"</h5>
         <h5>Rating: <?=$comment['rating']?> stars</h5>
         <?php $accountID = $comment['accountID'] ?>
-    <?php 
-          $isAdmin = "SELECT * FROM account WHERE accountID = $accountID";
-          $adminStatement = $db->prepare($isAdmin);
-          $adminStatement->execute();
-          $admin = $adminStatement->fetch();
-        //   && $admin['admin'] == 0
-    ?>
         <?php if(isset($_SESSION['admin']) ) : ?>
         <form method="post" action="process_comment.php">
             <input type="hidden" name="currentFilm" value="<?=$movie['movieID']?>"/>
             <button type="Submit" name="deleteComment" value="<?=$comment['commentID']?>" class="btn btn-outline-danger">Delete Comment</button>
         </form>
         <?php endif?>
+    </div>
     <?php endforeach?>
         </div>
     </div>  
-        <div id="botNav">
+    <div id="botNav">
             <footer>
                 <nav>
                     <ul>
                         <li><a href="index.php">Home</a></li>
-                        <li><a href="profile.php">My Profile</a></li>
                         <li><a href="about.php">About Us</a></li>
+                        <?php if(isset($_SESSION['loggedOn'])) : ?>
+                        <li><a href="profile.php">My Profile</a></li>
+                        <li><a href="search.php">Browse Movies</a></li>
+                        <?php endif?>
+                        <?php if(isset($_SESSION['admin'])) : ?>
                         <li><a href="create.php">Add a Movie</a></li>
+                        <li><a href="Genre.php">Add a Genre</a></li>
+                        <li><a href="newuser.php">Create User</a></li>
+                        <?php endif ?>
                     </ul>
                 </nav>
             </footer>
         </div>
-    </div>
 </body>
 </html>
